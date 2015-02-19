@@ -1,0 +1,88 @@
+/* a small, resizable text area */
+div.warning {
+    display: block;
+}
+div.information {
+    display: block;
+}
+textarea {
+  width: auto;
+  height: auto;
+}
+
+textarea.ta_resizable {
+  width: 35em;
+  height: 4em;
+  max-height: 15em;
+  max-width: 60em;
+  resize: both;
+}
+
+/* a large, resizable text area */
+textarea.ta_resizable_lg {
+  width: 35em;
+  height: 10em;
+  max-height: 20em;
+  max-width: 70em;
+  resize: both;
+}
+
+/* format stuff aligned to the right */
+.text-right {
+    text-align: right !important;
+}
+table td.text-right {
+    padding-right: 1em;
+}
+.text-left {
+    text-align: left !important;
+}
+table td.text-lef {
+    padding-left: 1em;
+}
+
+/* tooltip stuff */
+div.cg_tooltip_data {
+    display: none;
+}
+
+/* option menus */
+ul.option-menu-horiz {
+    border: none;
+    list-style-type: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+ul.option-menu-horiz ul {
+    list-style-type: none !important;
+    display: block;
+    clear: both;
+}
+ul.option-menu-horiz .ui-menu-item {
+    display: inline-block;
+    float: left;
+    margin: 0;
+    width: auto;
+}
+ul.option-menu-horiz li {
+    padding-right: 0.5em;
+}
+
+/* adjust goran's grid stuff for smaller screens */
+@media screen and (max-width: 1200px) {
+  .grid_4 {
+    float: initial !important;
+    width: auto !important;
+    margin: auto !important;
+  }
+  .grid_6 {
+    float: initial !important;
+    width: auto !important;
+    margin: auto !important;
+  }
+  .grid_8 {
+    float: initial !important;
+    width: auto !important;
+    margin: auto !important;
+  }
+}

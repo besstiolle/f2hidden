@@ -1,0 +1,45 @@
+<?php
+
+namespace CGExtensions\query;
+
+class csvfileresultset extends txtfileresultset
+{
+    private $_loaded;
+
+    protected function _query()
+    {
+        parent::_query();
+        if( $this->_loaded ) return;
+        $this->_loaded = 1;
+
+        $obj = $this->get_fileobject();
+        $obj->SetFlags(\SplFileObject::READ_CSV);
+        $obj->setCsvControl($this->_filter['delimiter'],$this->_filter['enclosure']);
+        $obj->seek($this->_filter['offset']); // just in case
+    }
+
+    public function __get($key)
+    {
+        if( $key == 'fields' ) {
+            $rec = array();
+            $rec['line'] = $this->get_fileobject()->key() + 1;
+            $cur = $this->get_fileobject()->current();
+            $map = $this->_filter['map'];
+            if( is_array($map) ) {
+                foreach( $map as $col => $fldname ) {
+                    $rec[$fldname] = null;
+                    if( isset($cur[$col]) ) $rec[$fldname] = $cur[$col];
+                }
+            }
+            else {
+                foreach( $cur as $key => $val ) {
+                    $rec['col_'.$key] = $val;
+                }
+            }
+            return $rec;
+        }
+        return parent::__get($key);
+    }
+
+} // end of class
+?>

@@ -1,0 +1,37 @@
+<?php
+
+namespace CGExtensions\query;
+
+class sql_resultset extends resultset
+{
+    public function __construct(sql_query $query)
+    {
+        $this->_filter = $query;
+    }
+
+    protected function _query()
+    {
+        if( $this->_rs ) return;
+
+        $sql = $this->_filter['sql'];
+        // get the first two words out of the query
+        list($w1,$w2,$junk) = explode(' ',$sql);
+        if( strtoupper($w1) == 'SELECT' ) {
+            if( strtoupper($w2) != 'SQL_CALC_FOUND_ROWS') {
+                // inject SQL_CALC_FOUND_ROWS
+                $sql = substr_replace($sql,'SELECT SQl_CALC_FOUND_ROWS',0,strlen('SELECT'));
+            }
+        }
+
+        $db = \cge_utils::get_db();
+        $this->_rs = $db->SelectLimit($sql,$this->_filter['limit'],$this->_filter['offset']);
+        $this->_totalmatching = (int) $db->GetOne('SELECT FOUND_ROWS()');
+    }
+
+    public function &get_object()
+    {
+        throw new \LogicException(__METHOD__.' is not utilized in this class');
+    }
+} // end of class
+
+?>

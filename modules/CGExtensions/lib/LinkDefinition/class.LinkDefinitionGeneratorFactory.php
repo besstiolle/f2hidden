@@ -1,0 +1,47 @@
+<?php
+
+namespace CGExtensions\LinkDefinition;
+
+class LinkDefinitionGeneratorFactory
+{
+    /**
+     * Given a dataref object, find and instantiate a LinkDefinitionGenerator
+     * that can generate links for this type of dataref
+     */
+    public function get_generator(DataRef $dataref)
+    {
+        if( strtolower($dataref->key1) == 'page' && (int) $dataref->key2 > 0 ) {
+            $dataref->key3 = $dataref->key2;
+            $dataref->key2 = 'Page';
+            $dataref->key1 = 'Core';
+        }
+
+        if( in_array($dataref->key1,array('Core','core','CORE','CMSMS')) ) {
+            $obj = new CoreLinkDefinitionGenerator;
+            $obj->set_dataref($dataref);
+            return $obj;
+        }
+
+        // assume key1 is a module name
+        $mod = \cms_utils::get_module($dataref->key1);
+        if( is_object($mod) ) {
+            $str = $dataref->key1.'\LinkDefinitionGenerator';
+            if( class_exists($str) ) {
+                $obj = new $str;
+                $obj->set_dataref($dataref);
+                return $obj;
+            }
+
+            $str = $dataref->key1.'_LinkDefinitionGenerator';
+            if( class_exists($str) ) {
+                $obj = new $str;
+                $obj->set_dataref($dataref);
+                return $obj;
+            }
+        }
+
+        throw new \RuntimeException('Could not find an appropriate link generator for data definitions of type '.$dataref->key1);
+    }
+}
+
+?>

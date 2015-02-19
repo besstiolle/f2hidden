@@ -1,0 +1,10 @@
+
+Options +FollowSymLinks
+RewriteEngine on
+RewriteBase /forge2
+
+# Rewrites urls in the form of /parent/child/
+# but only rewrites if the requested URL is not a file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?page=$1 [QSA]

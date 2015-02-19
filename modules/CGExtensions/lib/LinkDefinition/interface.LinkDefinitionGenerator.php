@@ -1,0 +1,20 @@
+<?php
+
+namespace CGExtensions\LinkDefinition;
+
+interface LinkDefinitionGenerator
+{
+    /**
+     * Set the Data reference into the object
+     * @param \CGExtensions\DataRef $dataref
+     * @retur void
+     */
+    public function set_dataref(DataRef $dataref);
+
+    /**
+     * @return \CGExtensions\LinkDefinition;
+     */
+    public function get_linkdefinition();
+}
+
+?>

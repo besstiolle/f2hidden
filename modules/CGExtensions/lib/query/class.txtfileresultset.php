@@ -1,0 +1,76 @@
+<?php
+
+namespace CGExtensions\query;
+
+class txtfileresultset extends resultset
+{
+    private $_fileobj;
+
+    protected function _query()
+    {
+        if( is_object($this->_fileobj) ) return;
+
+        $this->_fileobj = new \SplFileObject($this->_filter['filename']);
+        $this->_fileobj->seek($this->_filter['offset']);
+    }
+
+    public function __get($key)
+    {
+        if( $key == 'fields' ) {
+            $rec = array();
+            $rec['line'] = $this->_fileobj->key() + 1;
+            $rec['text'] = $this->_fileobj->current();
+            return $rec;
+        }
+        return parent::__get($key);
+    }
+
+    protected function &get_fileobject()
+    {
+        return $this->_fileobj;
+    }
+
+    public function RecordCount()
+    {
+        return $this->_filter['limit'];
+    }
+
+    public function MoveNext()
+    {
+        $line_num = $this->_fileobj->key();
+        $this->_fileobj->seek($line_num+1);
+    }
+
+    public function MoveFirst()
+    {
+        $this->_fileobj->seek($this->_filter['offset'] + $this->_filter['limit']);
+    }
+
+    public function EOF()
+    {
+        $this->_query();
+        $line = $this->_fileobj->key();
+        if( $line >= $this->_filter['offset'] + $this->_filter['limit'] ) return TRUE;
+        return FALSE;
+    }
+
+    public function Close() { }
+
+    public function TotalMatches()
+    {
+        return -1;
+    }
+
+    public function &get_object()
+    {
+        $fields = $this->fields;
+        $obj = new \Stdclass;
+        foreach( $fields as $key => $val ) {
+            $obj->$key = $val;
+        }
+        return $obj;
+    }
+
+
+} // end of class
+?>

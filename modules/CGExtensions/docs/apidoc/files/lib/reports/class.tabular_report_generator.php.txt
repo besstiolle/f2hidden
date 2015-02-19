@@ -1,0 +1,264 @@
+<?php
+
+namespace CGExtensions\reports;
+
+abstract class tabular_report_generator extends report_generator
+{
+    private   $_row;
+    private   $_prev_row;
+    protected $_record_number = 0;
+
+    protected function set_row($row)
+    {
+        if( is_array($this->_row) ) $this->_prev_row = $this->_row;
+        $this->_row = $row;
+    }
+
+    protected function start() {}
+
+    protected function finish()
+    {
+        $this->do_group_footers(TRUE);
+    }
+
+    protected function before_line() {}
+    protected function after_line() {}
+    protected function before_group_footers() {}
+    protected function after_group_footers() {}
+    protected function before_group_headers() {}
+    protected function after_group_headers() {}
+
+    abstract protected function draw_cell(tabular_report_cellfmt $cell,$contents);
+
+    protected function get_cell_contents($col_key,$tpl)
+    {
+        $smarty = cmsms()->GetSmarty();
+
+        $val = $this->_row[$col_key];
+        $smarty->assign('val',$val);
+        $smarty->assign('value',$val);
+
+        $col = $this->report()->get_column($col_key);
+        $smarty->assign('min',$col->get_min());
+        $smarty->assign('max',$col->get_max());
+        $smarty->assign('count',$col->get_count());
+        $smarty->assign('sum',$col->get_sum());
+        $smarty->assign('mean',$col->get_mean());
+        $smarty->assign('median',$col->get_median());
+
+        $tmp = $smarty->fetch('string:'.$tpl);
+        return $tmp;
+    }
+
+    protected function get_group_cell_contents($col_key,$grp_key,$tpl)
+    {
+        $smarty = cmsms()->GetSmarty();
+        $col = $this->report()->get_column($col_key);
+        $smarty->assign('label',$col->get_label());
+        $smarty->assign('grp_min',$col->get_grp_min($grp_key));
+        $smarty->assign('grp_max',$col->get_grp_max($grp_key));
+        $smarty->assign('grp_count',$col->get_grp_count($grp_key));
+        $smarty->assign('grp_sum',$col->get_grp_sum($grp_key));
+        $smarty->assign('grp_mean',$col->get_grp_mean($grp_key));
+        $smarty->assign('grp_median',$col->get_grp_median($grp_key));
+        $smarty->assign('last_val',$this->_prev_row[$col_key]);
+        $contents = $this->get_cell_contents($col_key,$tpl);
+        return $contents;
+    }
+
+    protected function before_row()
+    {
+        $this->do_group_footers();
+        $this->do_group_headers();
+    }
+
+    protected function after_row()
+    {
+        $this->add_column_histories($this->_row);
+        $this->_record_number++;
+    }
+
+    // see if the value for the column watched by the group
+    // changed
+    protected function changed(tabular_report_defn_group $grp,$row)
+    {
+        $col_key = $grp->get_column();
+        if( array_key_exists($col_key,$row) ) {
+            $val = $row[$col_key];
+            $col = $this->report()->get_column($col_key);
+            return $col->changed($val);
+        }
+        return FALSE;
+    }
+
+    protected function before_group_header(tabular_report_defn_group $grp)
+    {
+        switch( $grp->get_before_action() ) {
+        case $grp::ACT_PAGE:
+        case $grp::ACT_LINE:
+            break;
+        }
+    }
+
+    protected function after_group_header(tabular_report_defn_group $grp)
+    {
+    }
+
+    protected function do_group_header(tabular_report_defn_group $grp,$idx)
+    {
+        $lines = $grp->get_header_lines();
+        if( count($lines) ) {
+            $this->before_group_header($grp);
+            foreach( $lines as $line ) {
+                $this->before_line();
+                $columns = $this->report()->get_columns();
+                $keys = array_keys($columns);
+                for( $col_idx = 0; $col_idx < count($keys); ) {
+                    $key = $keys[$col_idx];
+                    $contents = null;
+                    $fmt = $line->get_cell_format($key);
+                    if( is_object($fmt) ) {
+                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),$fmt->get_template());
+                    } else {
+                        // there is no format information specified in the header line
+                        // but we need to know stuff like (maybe background color, alignment, color etc)
+                        // so get a format from the report
+                        $fmt = $this->report()->get_column($key);
+                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),'');
+                    }
+                    $this->draw_cell($fmt,$contents);
+                    $col_idx += max(1,$fmt->get_span());
+                }
+                $this->after_line();
+            }
+            $this->after_group_header($grp);
+        }
+    }
+
+    protected function do_group_headers($do_headers = false)
+    {
+        $grp_header_num = 0;
+        $grps = $this->report()->get_groups();
+        if( count($grps) ) {
+            foreach( $grps as $grp ) {
+                if( $do_headers || $this->_record_number == 0 || $this->changed($grp,$this->_row) ) {
+                    if( $grp_header_num == 0 ) $this->before_group_headers();
+                    $this->do_group_header($grp,$grp_header_num);
+                    $grp_header_num++;
+                }
+            }
+        }
+        if( $grp_header_num > 0 ) $this->after_group_headers();
+    }
+
+    protected function before_group_footer(tabular_report_defn_group $grp)
+    {
+
+    }
+
+    protected function after_group_footer(tabular_report_defn_group $grp)
+    {
+
+    }
+
+    protected function do_group_footer(tabular_report_defn_group $grp,$idx)
+    {
+        $lines = $grp->get_footer_lines();
+        if( count($lines) ) {
+            $this->before_group_footer($grp);
+            foreach( $lines as $line ) {
+                $this->before_line();
+                $columns = $this->report()->get_columns();
+                $keys = array_keys($columns);
+                for( $col_idx = 0; $col_idx < count($keys); ) {
+                    $key = $keys[$col_idx];
+                    $contents = null;
+                    $fmt = $line->get_cell_format($key);
+                    if( is_object($fmt) ) {
+                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),$fmt->get_template());
+                    } else {
+                        // there is no format information specified in the header line
+                        // but we need to know stuff like (maybe background color, alignment, color etc)
+                        // so get a format from the report
+                        $fmt = $this->report()->get_column($key);
+                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),'');
+                    }
+                    $this->draw_cell($fmt,$contents);
+                    $col_idx += max(1,$fmt->get_span());
+                }
+                $this->after_line();
+            }
+            $this->after_group_footer($grp);
+        }
+        // this group has changed, go through all columns and reset this group
+        foreach( $this->report()->get_columns() as $key => $col ) {
+            $col->reset_group($grp->get_column());
+        }
+    }
+
+    protected function do_group_footers($do_footers = false)
+    {
+        $grp_footer_num = 0;
+        if( $do_footers || $this->_record_number > 0 ) {
+            // check for column changes
+            $grps = $this->report()->get_groups();
+            if( count($grps) ) {
+                end($grps);
+                do {
+                    $grp = current($grps);
+                    if( $do_footers || $this->changed($grp,$this->_row) ) {
+                        if( $grp_footer_num == 0 ) $this->before_group_footers();
+                        $this->do_group_footer($grp,$grp_footer_num);
+                        $grp_footer_num++;
+                    }
+                }
+                while( prev($grps) );
+            }
+        }
+        if( $grp_footer_num > 0 ) $this->after_group_footers();
+    }
+
+    protected function add_column_histories($row)
+    {
+        foreach( $this->report()->get_columns() as $key => &$col ) {
+            $val = $row[$key];
+            if( array_key_exists($key,$row) ) {
+                $col->add_history_value($val);
+                $grps = $this->report()->get_groups();
+                if( count($grps) ) {
+                    foreach( $grps as &$grp ) {
+                        $col->add_group_history_value($grp->get_column(), $val);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function each_row($row)
+    {
+        $this->set_row($row);
+        $this->before_row();
+        $this->before_line();
+        $content_columns = $this->report()->get_content_columns();
+        foreach( $this->report()->get_columns() as $key => $col ) {
+            if( in_array($key,$content_columns) ) {
+                // this column is in the main content row
+                // though the value may still be null.
+                $tpl = $this->report()->get_column($key)->get_template();
+                if( !$tpl ) $tpl = '{$val}';
+                $this->draw_cell($col,$this->get_cell_contents($key,$tpl));
+            }
+            else {
+                // this column is not in the main content row
+                // so draw a null value
+                $this->draw_cell($col,null);
+            }
+        }
+        $this->after_line();
+        $this->after_row();
+    }
+
+} // end of class
+
+
+?>

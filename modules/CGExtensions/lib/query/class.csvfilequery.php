@@ -1,0 +1,54 @@
+<?php
+
+namespace CGExtensions\query;
+
+class csvfilequery extends txtfilequery
+{
+    private $_data = array('delimiter'=>',','enclosure'=>'"','map'=>null);
+
+    public function __construct($params = array())
+    {
+        foreach( $params as $key => $val ) {
+            switch( $key ) {
+            case 'delimiter':
+            case 'enclosure':
+            case 'map':
+                $this->_data[$key] = $val;
+                unset($params[$key]);
+                break;
+            }
+        }
+        parent::__construct($params);
+    }
+
+    public function OffsetGet($key)
+    {
+        if( array_key_exists($key,$this->_data) ) return $this->_data[$key];
+        return parent::OffsetGet($key);
+    }
+
+    public function OffsetSet($key,$value)
+    {
+        switch( $key ) {
+        case 'delimiter':
+        case 'enclosure':
+            $this->_data[$key] = $value;
+            break;
+
+        default:
+            parent::OffsetSet($key,$value);
+        }
+    }
+
+    public function OffsetExists($key)
+    {
+        if( array_key_exists($key,$this->_data) ) return TRUE;
+        return parent::OffsetExists($key);
+    }
+
+    public function &execute()
+    {
+        $obj = new csvfileresultset($this);
+        return $obj;
+    }
+}
