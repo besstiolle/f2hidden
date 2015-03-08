@@ -10,19 +10,20 @@ if( !is_readable( $Orm ) ) {
 require_once($Orm);
 
 //$config = cmsms()->GetConfig();
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.Enum.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumProjectState.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumProjectRepository.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumProjectJoinRequestState.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumProjectType.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumAssignmentRole.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumTaggingType.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumHistoryType.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumCommentType.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumTrackerItemResolution.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumTrackerItemSeverity.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumTrackerItemState.php');
-require_once($config['root_path'].'/modules/Forge2/lib/Enum/class.EnumTrackerItemType.php');
+$pathShared = $config['root_path'].'/modules/Forge2/lib/shared/';
+require_once($pathShared.'class.Enum.php');
+require_once($pathShared.'class.EnumProjectState.php');
+require_once($pathShared.'class.EnumProjectRepository.php');
+require_once($pathShared.'class.EnumProjectJoinRequestState.php');
+require_once($pathShared.'class.EnumProjectType.php');
+require_once($pathShared.'class.EnumAssignmentRole.php');
+require_once($pathShared.'class.EnumTaggingType.php');
+require_once($pathShared.'class.EnumHistoryType.php');
+require_once($pathShared.'class.EnumCommentType.php');
+require_once($pathShared.'class.EnumTrackerItemResolution.php');
+require_once($pathShared.'class.EnumTrackerItemSeverity.php');
+require_once($pathShared.'class.EnumTrackerItemState.php');
+require_once($pathShared.'class.EnumTrackerItemType.php');
 
 class Forge2Migrate extends Orm
 {   
