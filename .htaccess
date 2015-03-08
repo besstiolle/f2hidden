@@ -1,7 +1,7 @@
 
 Options +FollowSymLinks
 RewriteEngine on
-RewriteBase /f2hidden
+RewriteBase /forge2hidden
 
 # Rewrites urls in the form of /parent/child/
 # but only rewrites if the requested URL is not a file or directory
