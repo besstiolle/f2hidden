@@ -110,18 +110,14 @@ class Forge2 extends Orm
 		//Get Token
 		$route = $this->_generateRoute($prefix, $version, 'token');
 		$this->_add_static($route, array('action'=>'token'));
-
-		//List of Projects
-		$route = $this->_generateRoute($prefix, $version, 'projects');
-		$this->_add_static($route, array('action'=>'projects'));
-
-		//Page of project
-		/*$route = $this->_generateRoute($prefix, $version, 'projects',$sid, $projectName);
-		$this->_add_static($route, array('action'=>'projects'));*/
 		
-		//Page of project
-		$route = $this->_generateRoute($prefix, $version, 'projects',$sid, 'a');
-		$this->_add_static($route, array('action'=>'projects'));
+		//get/delete/update a project
+		$route = $this->_generateRoute($prefix, $version, 'project',$sid);
+		$this->_add_static($route, array('action'=>'project'));
+
+		//getAll/create project(s)
+		$route = $this->_generateRoute($prefix, $version, 'project');
+		$this->_add_static($route, array('action'=>'project', '_all'=>TRUE));
 
 		//sandbox for quick test
 		$route = $this->_generateRoute($prefix, $version, 'sandbox');

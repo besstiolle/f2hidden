@@ -1,5 +1,7 @@
 <?php
 
+if (!function_exists("cmsms")) exit;
+
 class ApiResponse {
 
 	private $startdt;

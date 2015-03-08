@@ -7,16 +7,17 @@ class FieldController{
 	private $path;
 	private $name;
 	private $groupe;
-	private $method;
+	private $action;
 	private $params;
 	private $warn = array();
 	private $notice = array();
 
-	public function __construct($path ,$name, $groupe, $method, $params){
+
+	public function __construct($path ,$name, $groupe, $action, $params){
 		$this->path = $path;
 		$this->name = $name;
 		$this->groupe = $groupe;
-		$this->method = $method;
+		$this->action = $action;
 		$this->params = $params;
 	}
 
@@ -29,19 +30,19 @@ class FieldController{
 		unset($this->params['module']);
 		unset($this->params['showtemplate']);
 		unset($this->params['token']);
-		
-		$patterns = $this->path.'lib/auth/inc.project.php';
-		$definitions = $this->path.'lib/auth/admin/inc.project_'.$_SERVER['REQUEST_METHOD'].'.php';
+
+		$patterns = $this->path.'lib/auth/inc.'.$this->name.'.php';
+		$definitions = $this->path.'lib/auth/'.$this->groupe.'/inc.'.$this->name.'_'.$this->action.'.php';
 
 		// the Parameter is not know 
 		if(!file_exists($patterns)){
 			$response->setCode(400); 
-			$response->setMessage("Bad Request");
+			$response->setMessage("Bad Request".$patterns.' ' .$definitions);
 			echo $response;
 			exit;
 		}
 
-		// the Parameter is know but is not linked for the method
+		// the Parameter is know but is not linked for the action
 		if(!file_exists($definitions) ){
 			$response->setCode(405);
 			$response->setMessage("Method not allowed");

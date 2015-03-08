@@ -14,6 +14,10 @@
 				, OrmCAST::$STRING
 				, 255
 			));
+			$this->add(new OrmField('groupname'	
+				, OrmCAST::$STRING
+				, 255
+			));
 			$this->add(new OrmField('salt'	
 				, OrmCAST::$STRING
 				, 255
@@ -30,6 +34,7 @@
 			$salt = sha1(mt_rand());
 			$user->set('name', 'root');
 			$user->set('salt', $salt);
+			$user->set('groupname', "admin");
 			$user->set('password', sha1(sha1('pass').$salt));
 
 			$user->save();

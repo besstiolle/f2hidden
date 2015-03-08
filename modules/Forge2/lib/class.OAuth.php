@@ -60,6 +60,26 @@ class OAuth{
 		return $response;
 	}
 
+	public static function getUserGroup(\ApiResponse $response){
+		$params = $response->getParams();
+		if(!empty($params['token'])){
+			$oauthToken = new OAuthToken();
+			$tokens = OrmCore::findByIds($oauthToken, array($params['token']));
+			if(count($tokens) != 0){
+				$token = $tokens[0];
+				//Select by example
+				$example = new OrmExample();
+				$example->addCriteria('name', OrmTypeCriteria::$EQ, array($token->get('user_name')));
+				$users = OrmCore::findByExample(new OAuthUser, $example);
+				if(count($users) != 0){
+					$user = $users[0];
+					return $user->get('groupname');
+				}
+			}
+		}
+		return null;
+	}
+
 	public static function getNewToken(\ApiResponse $response){
 
 		$params = $response->getParams();

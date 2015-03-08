@@ -1,40 +1,51 @@
 <?php
 
 if (!function_exists("cmsms")) exit;
+include('services/interface.service.php');
+include('services/abstract.service.php');
 
-//Paranoïd mode : ALL methods : GET PUT POST DELETE
-ApiRequest::allowMethods(ApiRequest::$ALL);
-
-$response = new ApiResponse($params);
-
-//Check the token
-$response = OAuth::validToken($response);
-
-$params = $response->getParams();
-$config = cmsms()->GetConfig();
-
-
-//Include fieldController
-$fc = new FieldController($this->getPath(), 'project', 'admin', $_SERVER['REQUEST_METHOD'], $params);
-$fc->validate($response);
-$params = $fc->getParams();
-
-if(!empty($fc->getWarn())){
-	$response->addContent('warning', $fc->getWarn());
-	
-	//We stop if we have warning.
-	$response->setCode(400); 
-	$response->setMessage("Bad Request");
-	echo $response;
-	exit;
+//To make distinction between get / getall
+$all = false;
+if(!empty($params['_all'])){
+	$all = true;
+	unset($params['_all']);
 }
 
-if(!empty($fc->getNotice())){
-	$response->addContent('notice', $fc->getNotice());
+switch ($params['action']){
+	case 'project';
+		include('services/project.service.php');
+		$service = new projectService($this->getPath(), $params);
+		break;
+
+	default:
+		# code...
+		break;
 }
 
-include_once($this->getPath().'lib/actions/action.project_'.$_SERVER['REQUEST_METHOD'].'.php');
 
-//Display result
-echo $response;
+
+switch ($_SERVER['REQUEST_METHOD']) {
+	case ApiRequest::$GET;
+		if($all){
+			$service->getAllWrapper();
+		} else {
+			$service->getWrapper();
+		}
+
+		break;
+	case ApiRequest::$DELETE;
+		$service->deleteWrapper();
+		break;
+	case ApiRequest::$PUT;
+		$service->createWrapper();
+		break;
+	case ApiRequest::$POST;
+		$service->updateWrapper();
+		break;
+	default:
+		# code...
+		break;
+}
+
+echo $service->getResponse();
 exit;
