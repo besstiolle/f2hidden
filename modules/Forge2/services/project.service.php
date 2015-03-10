@@ -42,18 +42,40 @@ class projectService extends abstractService implements interfaceService {
 	function getAll(){
 		//Select by example
 		$example = new OrmExample();
-		$example->addCriteria('state', OrmTypeCriteria::$EQ, array(EnumProjectState::accepted));
-		$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array(EnumProjectType::module));
+		if(!empty($this->params['state']) ) {
+			$example->addCriteria('state', OrmTypeCriteria::$EQ, array($this->params['state']));
+		}
 
+		if(!empty($this->params['project_type']) ) {
+			$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array($this->params['project_type']));
+		}
+		
+		//$example->addCriteria('state', OrmTypeCriteria::$EQ, array(EnumProjectState::accepted));
+		//$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array(EnumProjectType::module));
+
+		if(!empty($this->params['user_id']) ) {
+			$exampleAssignment = new OrmExample();
+			$exampleAssignment->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
+			$assignements = OrmCore::findByExample(new Assignment, $exampleAssignment);
+			$projectsIds = array();
+			foreach ($assignements as $assignement) {
+				$projectsIds[] = $assignement->get('project_id')->get('id');
+			}
+			$example->addCriteria('id', OrmTypeCriteria::$IN, $projectsIds);
+		}
+
+		
+/*
 		if(!empty($this->params['filterAlpha']) ) {
 			$example->addCriteria('unix_name', OrmTypeCriteria::$LIKE, array($this->params['filterAlpha'].'%'));
-		}
+		}*/
 
 
 		//Number of element to return. Min = 1, default = 10
 		$n = 10;
 		if(!empty($this->params['n']) && preg_match('#^[0-9]+$#', $this->params['n'])){
 			$n = max(1, $this->params['n']);
+			unset($this->params['n']);
 		}
 
 		// position of the element in Sql way
@@ -61,7 +83,9 @@ class projectService extends abstractService implements interfaceService {
 		if(!empty($this->params['p']) && preg_match('#^[0-9]+$#', $this->params['p'])){
 			$p = max(1, $this->params['p']);
 			$pos = ($p - 1) *  $n;
+			unset($this->params['p']);
 		}
+
 
 		$projects = OrmCore::findByExample(new Project, 
 											$example, 
