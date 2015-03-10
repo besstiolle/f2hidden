@@ -128,7 +128,7 @@ class Forge2 extends Orm
 	}
 
 	private function _generateRoute(){
-   		return '/'.implode('\/', func_get_args()).'$/';
+   		return '/^'.implode('\/', func_get_args()).'$/';
     }
 
     private function _add_static($route, $params){
