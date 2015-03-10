@@ -73,7 +73,7 @@ class FieldController{
 			}
 		}
 
-		//Test #1 : the fields optionnal, if there are present, must respect the pattern.
+		//Test #2 : the fields optionnal, if there are present, must respect the pattern.
 		foreach ($fieldsOptional as $fieldName) {
 			if(!empty($this->params[$fieldName])){
 				
@@ -87,7 +87,12 @@ class FieldController{
 		}
 
 		//Test #3 : the extra fields are ignored
+		$staticField = array('n','p'); //FIXME : refaire le code en mieux
 		foreach ($this->params as $fieldName => $values) {
+			if(in_array($fieldName, $staticField)){
+				continue;
+			}
+
 			if(!in_array($fieldName, $fieldsOptional) && !in_array($fieldName, $fieldsRequired)){
 				$this->notice[] = 'field '.$fieldName.' was unexpected and have been dropped from request';
 				unset($this->params[$fieldName]);
