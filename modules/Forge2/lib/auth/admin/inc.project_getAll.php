@@ -7,4 +7,5 @@ $fieldsRequired = [
 
 
 $fieldsOptional = [
+	'user_id', //for filter
 				];

@@ -30,4 +30,7 @@ $fields = [
 	'last_file_date' => '',
 	'github_repo' => '',
 	'freshness_date' => '',
+
+	//For filter
+	'user_id' => '#^[0-9]+$#',
 ];

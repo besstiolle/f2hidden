@@ -76,6 +76,11 @@ class ApiRequest {
 			$sanitized['n'] = $params['n'];
 		}
 
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['user_id']) && preg_match($pattern, $params['user_id'])){
+			$sanitized['user_id'] = $params['user_id'];
+		}
+
 	/*	$pattern = '#^[0-9]+$#';
 		if(isset($params['projectId']) && preg_match($pattern, $params['projectId'])){
 			$sanitized['projectId'] = $params['projectId'];
