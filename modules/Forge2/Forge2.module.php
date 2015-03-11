@@ -119,6 +119,14 @@ class Forge2 extends Orm
 		$route = $this->_generateRoute($prefix, $version, 'project');
 		$this->_add_static($route, array('action'=>'project', '_all'=>TRUE));
 
+		//get/delete/update a assignment
+		$route = $this->_generateRoute($prefix, $version, 'assignment',$sid);
+		$this->_add_static($route, array('action'=>'assignment'));
+
+		//getAll/create assignment(s)
+		$route = $this->_generateRoute($prefix, $version, 'assignment');
+		$this->_add_static($route, array('action'=>'assignment', '_all'=>TRUE));
+
 		//sandbox for quick test
 		$route = $this->_generateRoute($prefix, $version, 'sandbox');
 		$this->_add_static($route, array('action'=>'default'));

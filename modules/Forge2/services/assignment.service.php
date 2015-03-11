@@ -2,9 +2,9 @@
 
 if (!function_exists("cmsms")) exit;
 
-class assignementService extends abstractService implements interfaceService {
+class assignmentService extends abstractService implements interfaceService {
 	
-	protected $serviceName = 'assignement';
+	protected $serviceName = 'assignment';
 
 	public function __construct($path, $params){
 		//All methods allowed
@@ -22,20 +22,21 @@ class assignementService extends abstractService implements interfaceService {
 		//We don't need the sid anymore
 		unset($this->params['sid']);
 
-		$assignements = OrmCore::findByExample(new Assignement, 
+		$assignments = OrmCore::findByExample(new Assignment, 
 											$example, 
 											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit(0, 10));
-		if(empty($assignements)){
+
+		if(empty($assignments)){
 			$this->response->setCode(404); 
 		}
 
-		$assignementsList = array();
-		foreach ($assignements as $assignement) {
-			$assignementsList[] = $assignement->getValues();
+		$assignmentsList = array();
+		foreach ($assignments as $assignment) {
+			$assignmentsList[] = OrmUtilities::entityToArray($assignment);
 		}
 
-		$this->response->addContent('assignements', $assignementsList);
+		$this->response->addContent('assignments', $assignmentsList);
 		return $this->response;
 	}
 
@@ -70,25 +71,25 @@ class assignementService extends abstractService implements interfaceService {
 		}
 
 
-		$assignements = OrmCore::findByExample(new Assignement, 
+		$assignments = OrmCore::findByExample(new Assignment, 
 											$example, 
 											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit($pos, $n));
 
-		$assignementsList = array();
-		foreach ($assignements as $assignement) {
-			$assignementsList[] = $assignement->getValues();
+		$assignmentsList = array();
+		foreach ($assignments as $assignment) {
+			$assignmentsList[] = OrmUtilities::entityToArray($assignment);
 		}
 
 
-		$this->response->addContent('assignement', $assignementsList);
+		$this->response->addContent('assignment', $assignmentsList);
 
 		return $this->response;
 	}
 
 	function delete(){
 
-		OrmCore::deleteByIds(new Assignement, array($this->params['sid']));
+		OrmCore::deleteByIds(new Assignment, array($this->params['sid']));
 
 		$this->response->addContent('info', 'entity deleted with success');
 
@@ -96,12 +97,13 @@ class assignementService extends abstractService implements interfaceService {
 	}
 
 	function create(){
-/*
+
 		//Select by example
 		$example = new OrmExample();
-		$example->addCriteria('unix_name', OrmTypeCriteria::$EQ, array($this->params['unix_name']));
+		$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
+		$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 
-		$entities = OrmCore::findByExample(new Project, $example);
+		$entities = OrmCore::findByExample(new Assignment, $example);
 
 		if(!empty($entities)){
 			$this->response->setCode(400); 
@@ -109,7 +111,7 @@ class assignementService extends abstractService implements interfaceService {
 			return;
 		}
 
-		$entity = new Project();
+		$entity = new Assignment();
 		foreach ($this->params as $key => $value) {
 			$entity->set($key, $value);
 		}
@@ -118,17 +120,17 @@ class assignementService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$projectsList = array($entity->getValues());
+		$assignmentsList[] = OrmUtilities::entityToArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
-		$this->response->addContent('projects', $projectsList);
+		$this->response->addContent('assignments', $assignmentsList);
 
-		return $this->response;*/
+		return $this->response;
 	}
 
 	function update(){
-/*
-		$entities = OrmCore::findByIds(new Project, array($this->params['sid']));
+
+		$entities = OrmCore::findByIds(new Assignment, array($this->params['sid']));
 
 		//We don't need the sid anymore
 		unset($this->params['sid']);
@@ -148,12 +150,12 @@ class assignementService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$projectsList = array($entity->getValues());
+		$assignmentsList[] = OrmUtilities::entityToArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
-		$this->response->addContent('projects', $projectsList);
+		$this->response->addContent('assignments', $assignmentsList);
 
-		return $this->response;*/
+		return $this->response;
 	}
 
 }

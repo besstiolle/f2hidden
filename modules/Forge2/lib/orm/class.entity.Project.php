@@ -162,6 +162,14 @@
 				, NULL 
 			));
 
+			$this->add(new OrmField('assignments'	
+				, OrmCAST::$NONE
+				, NULL	
+				, TRUE 
+				, OrmKEY::$AK
+				, "Assignment.project_id"
+			));
+
 			$this->garnishAutoincrement();
 			$this->garnishDefaultValue("state", EnumProjectState::pending);
 			$this->garnishDefaultValue("repository_type", EnumProjectRepository::svn);

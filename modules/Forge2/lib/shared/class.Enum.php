@@ -62,6 +62,17 @@ abstract class Enum
         throw new Exception( sprintf( '%s does not map to an Enum field', $string ) );
     }
 
+    final public static function ConstToArray( $class ){
+        if ( class_exists( $class, false ) )
+        {
+            $reflector = new ReflectionClass( $class );
+            if ( $reflector->IsSubClassOf( 'Enum' ) )
+            {
+                return $reflector->getConstants();
+            }
+        }
+    }
+
     final public static function IsValidValue( $enumType, $enumValue )
     {
         if ( class_exists( $enumType ) )

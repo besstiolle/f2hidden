@@ -31,8 +31,8 @@ class projectService extends abstractService implements interfaceService {
 		}
 
 		$projectsList = array();
-		foreach ($projects as $project) {
-			$projectsList[] = $project->getValues();
+		foreach ($projects as $entity) {
+			$projectsList[] = OrmUtilities::entityToArray($entity);
 		}
 
 		$this->response->addContent('projects', $projectsList);
@@ -43,8 +43,10 @@ class projectService extends abstractService implements interfaceService {
 		//Select by example
 		$example = new OrmExample();
 		if(!empty($this->params['state']) ) {
+			//TODO : tester la validité de l'enum
 			$example->addCriteria('state', OrmTypeCriteria::$EQ, array($this->params['state']));
 		}
+
 
 		if(!empty($this->params['project_type']) ) {
 			$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array($this->params['project_type']));
@@ -53,7 +55,8 @@ class projectService extends abstractService implements interfaceService {
 		//$example->addCriteria('state', OrmTypeCriteria::$EQ, array(EnumProjectState::accepted));
 		//$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array(EnumProjectType::module));
 
-		if(!empty($this->params['user_id']) ) {
+		//NOT USED ANYMORE, see rest rest/v1/assignment
+		/*if(!empty($this->params['user_id']) ) {
 			$exampleAssignment = new OrmExample();
 			$exampleAssignment->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 			$assignements = OrmCore::findByExample(new Assignment, $exampleAssignment);
@@ -62,7 +65,7 @@ class projectService extends abstractService implements interfaceService {
 				$projectsIds[] = $assignement->get('project_id')->get('id');
 			}
 			$example->addCriteria('id', OrmTypeCriteria::$IN, $projectsIds);
-		}
+		}*/
 
 		
 /*
@@ -93,8 +96,8 @@ class projectService extends abstractService implements interfaceService {
 											new OrmLimit($pos, $n));
 
 		$projectsList = array();
-		foreach ($projects as $project) {
-			$projectsList[] = $project->getValues();
+		foreach ($projects as $entity) {
+			$projectsList[] = OrmUtilities::entityToArray($entity);
 		}
 
 
@@ -135,7 +138,7 @@ class projectService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$projectsList = array($entity->getValues());
+		$projectsList[] = OrmUtilities::entityToArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
 		$this->response->addContent('projects', $projectsList);
@@ -165,7 +168,7 @@ class projectService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$projectsList = array($entity->getValues());
+		$projectsList[] = OrmUtilities::entityToArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
 		$this->response->addContent('projects', $projectsList);
