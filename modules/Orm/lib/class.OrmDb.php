@@ -83,8 +83,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		$errorMsg = OrmDb::$db->ErrorMsg();
-		if ($result === false || !empty($errorMsg)) {
+		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The Query was : ".$query);
@@ -118,8 +117,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		$errorMsg = OrmDb::$db->ErrorMsg();
-		if ($result === false || !empty($errorMsg)) {
+		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The Query was : ".$query);
@@ -151,8 +149,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		$errorMsg = OrmDb::$db->ErrorMsg();
-		if ($result === false || !empty($errorMsg)) {
+		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The GenId was made on : ".$seqname);
@@ -189,8 +186,7 @@ class OrmDb {
 		//Push Query in buffer
 		OrmDb::pushQueries();
 
-		$errorMsg = OrmDb::$db->ErrorMsg();
-		if ($result === false || !empty($errorMsg)) {
+		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The CreateTable was made on : {$tableName} with {$hql} parameters");
@@ -223,9 +219,8 @@ class OrmDb {
 		$result = OrmDb::$dict->executeSQLArray($sqlarray);
 		//Push Query in buffer
 		OrmDb::pushQueries();
-		
-		$errorMsg = OrmDb::$db->ErrorMsg();
-		if ($result === false || !empty($errorMsg)) {
+
+		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The DropTable was made on : {$tableName}");
@@ -307,9 +302,8 @@ class OrmDb {
 		$result = OrmDb::$dict->executeSQLArray($sqlarray);
 		//Push Query in buffer
 		OrmDb::pushQueries();
-		
-		$errorMsg = OrmDb::$db->ErrorMsg();
-		if ($result === false || !empty($errorMsg)) {
+
+		if ($result === false || OrmDb::$db->ErrorMsg()) {
 			OrmTrace::error($errorMsg);
 			OrmTrace::error(" > Mysql said : ".OrmDb::$db->ErrorMsg());
 			OrmTrace::error(" > The createIndex was made on : {$tableName} with the fields : {$listFields}");
