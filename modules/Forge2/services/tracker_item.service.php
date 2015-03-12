@@ -2,11 +2,11 @@
 
 if (!function_exists("cmsms")) exit;
 
-class projectService extends abstractService implements interfaceService {
+class tracker_itemService extends abstractService implements interfaceService {
 	
-	protected $serviceName = 'project';
+	protected $serviceName = 'tracker_item';
 
-	protected $jsonBlock = 'projects';
+	protected $jsonBlock = 'tracker_items';
 
 	protected $currentEntity;
 
@@ -16,7 +16,7 @@ class projectService extends abstractService implements interfaceService {
 
 		$this->initResponse($path, $params);
 
-		$this->currentEntity = new Project();
+		$this->currentEntity = new Tracker_item();
 	}
 
 	function get(){
@@ -30,15 +30,16 @@ class projectService extends abstractService implements interfaceService {
 
 		$entities = OrmCore::findByExample($this->currentEntity, 
 											$example, 
-											new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
+											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit(0, 10));
+
 		if(empty($entities)){
 			$this->response->setCode(404); 
 		}
 
 		$entityVals = array();
-		foreach ($entities as $entity) {
-			$entityVals[] = OrmUtilities::entityToArray($entity);
+		foreach ($entities as $entities) {
+			$entityVals[] = OrmUtilities::entityToArray($entities);
 		}
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -48,21 +49,20 @@ class projectService extends abstractService implements interfaceService {
 	function getAll(){
 		//Select by example
 		$example = new OrmExample();
-		if(!empty($this->params['state']) ) {
-			//TODO : tester la validité de l'enum
-			$example->addCriteria('state', OrmTypeCriteria::$EQ, array($this->params['state']));
+		if(!empty($this->params['role']) ) {
+			$example->addCriteria('role', OrmTypeCriteria::$EQ, array($this->params['role']));
 		}
 
-
-		if(!empty($this->params['project_type']) ) {
-			$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array($this->params['project_type']));
+		if(!empty($this->params['project_id']) ) {
+			$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
 		}
 		
-		//$example->addCriteria('state', OrmTypeCriteria::$EQ, array(EnumProjectState::accepted));
-		//$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array(EnumProjectType::module));
+		if(!empty($this->params['user_id']) ) {
+			$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
+		}
 
-		//Number of element to return. Min = 1, default = 10
-		$n = 10;
+		//Number of element to return. Min = 1, default = 100
+		$n = 100;
 		if(!empty($this->params['n']) && preg_match('#^[0-9]+$#', $this->params['n'])){
 			$n = max(1, $this->params['n']);
 			unset($this->params['n']);
@@ -79,12 +79,12 @@ class projectService extends abstractService implements interfaceService {
 
 		$entities = OrmCore::findByExample($this->currentEntity, 
 											$example, 
-											new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
+											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit($pos, $n));
 
 		$entityVals = array();
-		foreach ($entities as $entity) {
-			$entityVals[] = OrmUtilities::entityToArray($entity);
+		foreach ($entities as $entities) {
+			$entityVals[] = OrmUtilities::entityToArray($entities);
 		}
 
 
@@ -106,7 +106,8 @@ class projectService extends abstractService implements interfaceService {
 
 		//Select by example
 		$example = new OrmExample();
-		$example->addCriteria('unix_name', OrmTypeCriteria::$EQ, array($this->params['unix_name']));
+		$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
+		$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 
 		$entities = OrmCore::findByExample($this->currentEntity, $example);
 

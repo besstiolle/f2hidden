@@ -6,11 +6,17 @@ class assignmentService extends abstractService implements interfaceService {
 	
 	protected $serviceName = 'assignment';
 
+	protected $jsonBlock = 'assignments';
+
+	protected $currentEntity;
+
 	public function __construct($path, $params){
 		//All methods allowed
 		ApiRequest::allowMethods(ApiRequest::$ALL);
 
 		$this->initResponse($path, $params);
+
+		$this->currentEntity = new Assignment();
 	}
 
 	function get(){
@@ -22,21 +28,21 @@ class assignmentService extends abstractService implements interfaceService {
 		//We don't need the sid anymore
 		unset($this->params['sid']);
 
-		$assignments = OrmCore::findByExample(new Assignment, 
+		$entities = OrmCore::findByExample($this->currentEntity, 
 											$example, 
 											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit(0, 10));
 
-		if(empty($assignments)){
+		if(empty($entities)){
 			$this->response->setCode(404); 
 		}
 
-		$assignmentsList = array();
-		foreach ($assignments as $assignment) {
-			$assignmentsList[] = OrmUtilities::entityToArray($assignment);
+		$entityVals = array();
+		foreach ($entities as $entity) {
+			$entityVals[] = OrmUtilities::entityToArray($entity);
 		}
 
-		$this->response->addContent('assignments', $assignmentsList);
+		$this->response->addContent($this->jsonBlock, $entityVals);
 		return $this->response;
 	}
 
@@ -71,25 +77,25 @@ class assignmentService extends abstractService implements interfaceService {
 		}
 
 
-		$assignments = OrmCore::findByExample(new Assignment, 
+		$entities = OrmCore::findByExample($this->currentEntity, 
 											$example, 
 											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit($pos, $n));
 
-		$assignmentsList = array();
-		foreach ($assignments as $assignment) {
-			$assignmentsList[] = OrmUtilities::entityToArray($assignment);
+		$entityVals = array();
+		foreach ($entities as $entity) {
+			$entityVals[] = OrmUtilities::entityToArray($entity);
 		}
 
 
-		$this->response->addContent('assignment', $assignmentsList);
+		$this->response->addContent('assignment', $entityVals);
 
 		return $this->response;
 	}
 
 	function delete(){
 
-		OrmCore::deleteByIds(new Assignment, array($this->params['sid']));
+		OrmCore::deleteByIds($this->currentEntity, array($this->params['sid']));
 
 		$this->response->addContent('info', 'entity deleted with success');
 
@@ -103,7 +109,7 @@ class assignmentService extends abstractService implements interfaceService {
 		$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
 		$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 
-		$entities = OrmCore::findByExample(new Assignment, $example);
+		$entities = OrmCore::findByExample($this->currentEntity, $example);
 
 		if(!empty($entities)){
 			$this->response->setCode(400); 
@@ -111,7 +117,7 @@ class assignmentService extends abstractService implements interfaceService {
 			return;
 		}
 
-		$entity = new Assignment();
+		$entity = $this->currentEntity;
 		foreach ($this->params as $key => $value) {
 			$entity->set($key, $value);
 		}
@@ -120,17 +126,17 @@ class assignmentService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$assignmentsList[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtilities::entityToArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
-		$this->response->addContent('assignments', $assignmentsList);
+		$this->response->addContent($this->jsonBlock, $entityVals);
 
 		return $this->response;
 	}
 
 	function update(){
 
-		$entities = OrmCore::findByIds(new Assignment, array($this->params['sid']));
+		$entities = OrmCore::findByIds($this->currentEntity, array($this->params['sid']));
 
 		//We don't need the sid anymore
 		unset($this->params['sid']);
@@ -150,10 +156,10 @@ class assignmentService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$assignmentsList[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtilities::entityToArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
-		$this->response->addContent('assignments', $assignmentsList);
+		$this->response->addContent($this->jsonBlock, $entityVals);
 
 		return $this->response;
 	}

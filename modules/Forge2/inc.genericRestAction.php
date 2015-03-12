@@ -21,6 +21,10 @@ switch ($params['action']){
 		include('services/assignment.service.php');
 		$service = new assignmentService($this->getPath(), $params);
 		break;
+	case 'tracker_item';
+		include('services/tracker_item.service.php');
+		$service = new tracker_itemService($this->getPath(), $params);
+		break;
 
 	default:
 		# code...
