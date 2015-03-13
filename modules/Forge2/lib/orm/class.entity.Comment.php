@@ -25,12 +25,6 @@
 				, TRUE 
 				, NULL 
 			));
-			$this->add(new OrmField('created_at'	
-				, OrmCAST::$DATETIME
-				, NULL	
-				, NULL 
-				, NULL 
-			));
 			$this->add(new OrmField('commentable_id'	
 				, OrmCAST::$INTEGER
 				, NULL	
@@ -45,6 +39,12 @@
 			));
 			$this->add(new OrmField('user_id'	
 				, OrmCAST::$INTEGER
+				, NULL	
+				, NULL 
+				, NULL 
+			));
+			$this->add(new OrmField('created_at'	
+				, OrmCAST::$DATETIME
 				, NULL	
 				, NULL 
 				, NULL 

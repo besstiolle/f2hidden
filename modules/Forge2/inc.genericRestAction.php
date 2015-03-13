@@ -26,6 +26,11 @@ switch ($params['action']){
 		$service = new tracker_itemService($this->getPath(), $params);
 		break;
 
+	case 'comment';
+		include('services/comment.service.php');
+		$service = new commentService($this->getPath(), $params);
+		break;
+
 	default:
 		# code...
 		break;

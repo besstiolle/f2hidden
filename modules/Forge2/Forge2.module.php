@@ -102,45 +102,27 @@ class Forge2 extends Orm
 
 		$prefix = 'rest';
 		$version = 'v1';
-		$prefixProject = 'projects';
 		$sid = '(?P<sid>[0-9]+)';
-		$projectName = '(?P<projectName>[a-zA-Z0-9\-\_\:]+)';
-		$packageId = '(?P<packageId>[0-9]+)';
 
 		//Get Token
 		$route = $this->_generateRoute($prefix, $version, 'token');
 		$this->_add_static($route, array('action'=>'token'));
-		
-		//get/delete/update a project
-		$route = $this->_generateRoute($prefix, $version, 'project',$sid);
-		$this->_add_static($route, array('action'=>'project'));
 
-		//getAll/create project(s)
-		$route = $this->_generateRoute($prefix, $version, 'project');
-		$this->_add_static($route, array('action'=>'project', '_all'=>TRUE));
+		//Standard rest routes
+		$restRoutes = ['project', 'assignment', 'tracker_item', 'comment'];
+		foreach ($restRoutes as $restRoute) {
+			
+			//get/delete/update a $restRoute
+			$route = $this->_generateRoute($prefix, $version, $restRoute,$sid);
+			$this->_add_static($route, array('action'=>$restRoute));
 
-		//get/delete/update a assignment
-		$route = $this->_generateRoute($prefix, $version, 'assignment',$sid);
-		$this->_add_static($route, array('action'=>'assignment'));
-
-		//getAll/create assignment(s)
-		$route = $this->_generateRoute($prefix, $version, 'assignment');
-		$this->_add_static($route, array('action'=>'assignment', '_all'=>TRUE));
-
-		//get/delete/update a tracker_item
-		$route = $this->_generateRoute($prefix, $version, 'tracker_item',$sid);
-		$this->_add_static($route, array('action'=>'tracker_item'));
-
-		//getAll/create tracker_item(s)
-		$route = $this->_generateRoute($prefix, $version, 'tracker_item');
-		$this->_add_static($route, array('action'=>'tracker_item', '_all'=>TRUE));
-
+			//getAll/create $restRoute(s)
+			$route = $this->_generateRoute($prefix, $version, $restRoute);
+			$this->_add_static($route, array('action'=>$restRoute, '_all'=>TRUE));
+		}
 		//sandbox for quick test
 		$route = $this->_generateRoute($prefix, $version, 'sandbox');
 		$this->_add_static($route, array('action'=>'default'));
-
-		/*$route = new CmsRoute('/rest\/v1\/projects\/(?P<sid>[a-z0-9]+)$/',$this->GetName(),array('action'=>'default'));
-		cms_route_manager::add_static($route);*/
 	}
 
 	private function _generateRoute(){

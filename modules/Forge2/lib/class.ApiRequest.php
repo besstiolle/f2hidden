@@ -42,7 +42,7 @@ class ApiRequest {
 		}
 	}
 
-
+	//TODO : remove this and put everything inside /auth/xxx/ files
 	public static function sanitizeParameters($params){
 		$sanitized = array();
 
@@ -76,10 +76,30 @@ class ApiRequest {
 			$sanitized['n'] = $params['n'];
 		}
 
+
+
+
 		$pattern = '#^[0-9]+$#';
 		if(isset($params['user_id']) && preg_match($pattern, $params['user_id'])){
 			$sanitized['user_id'] = $params['user_id'];
 		}
+
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['commentable_id']) && preg_match($pattern, $params['commentable_id'])){
+			$sanitized['commentable_id'] = $params['commentable_id'];
+		}
+
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['project_id']) && preg_match($pattern, $params['project_id'])){
+			$sanitized['project_id'] = $params['project_id'];
+		}
+
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['role']) && preg_match($pattern, $params['role'])){
+			$sanitized['role'] = $params['role'];
+		}
+
+		
 
 	/*	$pattern = '#^[0-9]+$#';
 		if(isset($params['projectId']) && preg_match($pattern, $params['projectId'])){
