@@ -61,8 +61,8 @@ class assignmentService extends abstractService implements interfaceService {
 			$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 		}
 
-		//Number of element to return. Min = 1, default = 100
-		$n = 100;
+		//Number of element to return. Min = 1, default = 10
+		$n = 10;
 		if(!empty($this->params['n']) && preg_match('#^[0-9]+$#', $this->params['n'])){
 			$n = max(1, $this->params['n']);
 			unset($this->params['n']);
@@ -123,6 +123,7 @@ class assignmentService extends abstractService implements interfaceService {
 		}
 
 		$entity->set('created_at',time());
+		$entity->set('updated_at',time());
 
 		//Save the entity
 		$entity = $entity->save();

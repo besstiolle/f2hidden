@@ -47,22 +47,31 @@ class tracker_itemService extends abstractService implements interfaceService {
 	}
 
 	function getAll(){
+
 		//Select by example
 		$example = new OrmExample();
-		if(!empty($this->params['role']) ) {
-			$example->addCriteria('role', OrmTypeCriteria::$EQ, array($this->params['role']));
-		}
-
 		if(!empty($this->params['project_id']) ) {
 			$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
 		}
+
+		if(!empty($this->params['assigned_to_id']) ) {
+			$example->addCriteria('assigned_to_id', OrmTypeCriteria::$EQ, array($this->params['assigned_to_id']));
+		}
 		
-		if(!empty($this->params['user_id']) ) {
-			$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
+		if(!empty($this->params['created_by_id']) ) {
+			$example->addCriteria('created_by_id', OrmTypeCriteria::$EQ, array($this->params['created_by_id']));
+		}
+		
+		if(!empty($this->params['state']) ) {
+			$example->addCriteria('state', OrmTypeCriteria::$EQ, array($this->params['state']));
 		}
 
-		//Number of element to return. Min = 1, default = 100
-		$n = 100;
+		if(!empty($this->params['type']) ) {
+			$example->addCriteria('type', OrmTypeCriteria::$EQ, array($this->params['type']));
+		}
+
+		//Number of element to return. Min = 1, default = 10
+		$n = 10;
 		if(!empty($this->params['n']) && preg_match('#^[0-9]+$#', $this->params['n'])){
 			$n = max(1, $this->params['n']);
 			unset($this->params['n']);
@@ -105,7 +114,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 	function create(){
 
 		//Select by example
-		$example = new OrmExample();
+	/*	$example = new OrmExample();
 		$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
 		$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 
@@ -115,7 +124,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 			$this->response->setCode(400); 
 			$this->response->addContent('warn', 'entity with same unix_name found');
 			return;
-		}
+		}*/
 
 		$entity = $this->currentEntity;
 		foreach ($this->params as $key => $value) {
@@ -123,6 +132,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 		}
 
 		$entity->set('created_at',time());
+		$entity->set('updated_at',time());
 
 		//Save the entity
 		$entity = $entity->save();

@@ -127,13 +127,13 @@ class Forge2 extends Orm
 		$route = $this->_generateRoute($prefix, $version, 'assignment');
 		$this->_add_static($route, array('action'=>'assignment', '_all'=>TRUE));
 
-		//get/delete/update a item_tracker
-		$route = $this->_generateRoute($prefix, $version, 'item_tracker',$sid);
-		$this->_add_static($route, array('action'=>'item_tracker'));
+		//get/delete/update a tracker_item
+		$route = $this->_generateRoute($prefix, $version, 'tracker_item',$sid);
+		$this->_add_static($route, array('action'=>'tracker_item'));
 
-		//getAll/create item_tracker(s)
-		$route = $this->_generateRoute($prefix, $version, 'item_tracker');
-		$this->_add_static($route, array('action'=>'item_tracker', '_all'=>TRUE));
+		//getAll/create tracker_item(s)
+		$route = $this->_generateRoute($prefix, $version, 'tracker_item');
+		$this->_add_static($route, array('action'=>'tracker_item', '_all'=>TRUE));
 
 		//sandbox for quick test
 		$route = $this->_generateRoute($prefix, $version, 'sandbox');

@@ -122,6 +122,7 @@ class projectService extends abstractService implements interfaceService {
 		}
 
 		$entity->set('created_at',time());
+		$entity->set('updated_at',time());
 
 		//Save the entity
 		$entity = $entity->save();
