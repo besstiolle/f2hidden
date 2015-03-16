@@ -15,10 +15,10 @@
 			));
 			$this->add(new OrmField('project_id'	
 				, OrmCAST::$INTEGER
-				, NULL	
-				, TRUE 
+				, NULL
+				/*, TRUE 
 				, OrmKEY::$FK 
-				, "Project.id"
+				, "Project.id"*/
 			));
 			$this->add(new OrmField('assigned_to_id'	
 				, OrmCAST::$INTEGER
