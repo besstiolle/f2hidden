@@ -110,7 +110,7 @@ class Forge2 extends Orm
 
 		//Standard rest routes
 		$restRoutes = ['project', 'assignment', 'tracker_item', 'comment',
-					'history', 'history_line'];
+					'history'];
 		foreach ($restRoutes as $restRoute) {
 			
 			//get/delete/update a $restRoute
