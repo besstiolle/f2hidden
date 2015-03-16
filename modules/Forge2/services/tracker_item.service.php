@@ -62,11 +62,11 @@ class tracker_itemService extends abstractService implements interfaceService {
 			$example->addCriteria('created_by_id', OrmTypeCriteria::$EQ, array($this->params['created_by_id']));
 		}
 		
-		if(!empty($this->params['state']) ) {
+		if(isset($this->params['state']) ) {
 			$example->addCriteria('state', OrmTypeCriteria::$EQ, array($this->params['state']));
 		}
 
-		if(!empty($this->params['type']) ) {
+		if(isset($this->params['type']) ) {
 			$example->addCriteria('type', OrmTypeCriteria::$EQ, array($this->params['type']));
 		}
 

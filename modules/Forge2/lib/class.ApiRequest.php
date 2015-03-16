@@ -99,6 +99,26 @@ class ApiRequest {
 			$sanitized['role'] = $params['role'];
 		}
 
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['assigned_to_id']) && preg_match($pattern, $params['assigned_to_id'])){
+			$sanitized['assigned_to_id'] = $params['assigned_to_id'];
+		}
+
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['created_by_id']) && preg_match($pattern, $params['created_by_id'])){
+			$sanitized['created_by_id'] = $params['created_by_id'];
+		}
+
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['state']) && preg_match($pattern, $params['state'])){
+			$sanitized['state'] = $params['state'];
+		}
+
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['type']) && preg_match($pattern, $params['type'])){
+			$sanitized['type'] = $params['type'];
+		}
+
 		
 
 	/*	$pattern = '#^[0-9]+$#';
