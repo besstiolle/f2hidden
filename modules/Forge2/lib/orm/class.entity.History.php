@@ -30,6 +30,20 @@
 				, NULL	
 				, NULL 
 				, NULL 
+			));/*
+			$this->add(new OrmField('lines'	
+				, OrmCAST::$NONE
+				, NULL	
+				, OrmKEY::$AK 
+				, 'History_line.history_id'
+			));*/
+
+			$this->add(new OrmField('lines'	
+				, OrmCAST::$NONE
+				, NULL	
+				, TRUE 
+				, OrmKEY::$AK
+				, "History_line.history_id"
 			));
 
 			$this->garnishAutoincrement();

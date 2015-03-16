@@ -109,7 +109,8 @@ class Forge2 extends Orm
 		$this->_add_static($route, array('action'=>'token'));
 
 		//Standard rest routes
-		$restRoutes = ['project', 'assignment', 'tracker_item', 'comment'];
+		$restRoutes = ['project', 'assignment', 'tracker_item', 'comment',
+					'history', 'history_line'];
 		foreach ($restRoutes as $restRoute) {
 			
 			//get/delete/update a $restRoute

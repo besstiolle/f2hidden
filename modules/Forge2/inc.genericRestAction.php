@@ -31,8 +31,13 @@ switch ($params['action']){
 		$service = new commentService($this->getPath(), $params);
 		break;
 
+	case 'history';
+		include('services/history.service.php');
+		$service = new historyService($this->getPath(), $params);
+		break;
+
 	default:
-		# code...
+		echo "You may forgot to implement action ".$params['action']." into genericRestAction.";
 		break;
 }
 
