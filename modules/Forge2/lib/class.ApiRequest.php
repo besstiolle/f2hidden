@@ -119,6 +119,11 @@ class ApiRequest {
 			$sanitized['type'] = $params['type'];
 		}
 
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['commentable_id']) && preg_match($pattern, $params['commentable_id'])){
+			$sanitized['commentable_id'] = $params['commentable_id'];
+		}
+
 		
 
 	/*	$pattern = '#^[0-9]+$#';
