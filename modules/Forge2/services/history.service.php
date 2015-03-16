@@ -51,7 +51,7 @@ class historyService extends abstractService implements interfaceService {
 		//Select by example
 		$example = new OrmExample();
 		if(!empty($this->params['historizable_id']) ) {
-			$example->addCriteria('historizable_id', OrmTypeCriteria::$EQ, array($this->params['commentable_id']));
+			$example->addCriteria('historizable_id', OrmTypeCriteria::$EQ, array($this->params['historizable_id']));
 		}
 
 		//Number of element to return. Min = 1, default = 10
