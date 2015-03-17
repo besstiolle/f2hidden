@@ -1206,6 +1206,78 @@ class OrmCore {
 		return array_values($entities);
 
 	}
+
+	/**
+     * Allow counting a list of OrmEntity from a list of OrmCriteria
+     * 
+     * Example : counting the customers with lastName 'Roger' (no casse sensitive)
+     * 
+     *  <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('lastName', OrmTypeCriteria::$EQ, array('roger'), true);
+     * 
+     *       OrmCore::countByExample($customer, $example);
+     * </code>
+     * 
+     *  Example : counting the customers with Id >= 90
+     * 
+     * <code>
+     *       $customer = MyAutoload::getInstance($this->GetName(), 'customer');
+     * 
+     *       $example = new OrmExample();
+     *       $example->addCriteria('customer_id', OrmTypeCriteria::$GTE, array(90));
+     * 
+     *       OrmCore::countByExample($customer, $example);
+     * </code>
+     * 
+     * NOTE : EQ => <b>EQ</b>uals, GTE => <b>G</b>reater <b>T</b>han or <b>E</b>quals
+     * 
+     * NOTE 2 : you can add as many Criterias as you want in an Example Object
+     * 
+     * @param OrmEntity $entityParam an instance of the entity
+     * @param OrmExample $example the Object OrmExample with some Criterias inside
+     * @param string $condition let user define if the multiple conditions must of type AND or OR
+     * 
+     * @see OrmExample
+     * @see OrmTypeCriteria
+     */
+	public static final function countByExample(OrmEntity $entityParam, OrmExample $example, $condition = 'AND') {
+
+		$listeField = $entityParam->getFields();
+
+		$criterias = $example->getCriterias();
+		$select = "SELECT count(*) as cpt FROM ".$entityParam->getDbname().' WHERE ';
+		
+		list($hql, $params) = OrmCore::_getHqlExample($listeField, $criterias, $condition);
+
+		$queryExample = $select.$hql;
+		
+		//If it's already in the cache, we return the result
+		if(OrmCache::getInstance()->isCache($queryExample, $params)) {
+
+				$counter = OrmCache::getInstance()->getCache($queryExample,$params);
+
+		} else {
+				//Execution
+				$result = OrmDb::execute($queryExample,
+										$params,
+										"Database error during OrmCore::countByExample(OrmEntity &{$entityParam->getName()}, OrmExample \$example)");
+
+				OrmTrace::debug("countByExample : ".$result->RecordCount()." resultat(s)");
+
+				$counter = array();
+				while ($row = $result->FetchRow()) {
+				  $counter = $row['cpt'];
+				}
+
+				//We push the result into the cache before return it
+				OrmCache::getInstance()->setCache($queryExample, null, $counter);
+		}
+		return $counter;
+
+	}
    
 	/**
      * Allow delete a list of OrmEntity from a list of OrmCriteria
