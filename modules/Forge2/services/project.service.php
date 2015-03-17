@@ -82,6 +82,9 @@ class projectService extends abstractService implements interfaceService {
 											new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit($pos, $n));
 
+		//counter
+		$count = OrmCore::countByExample($this->currentEntity, 
+											$example);
 		$entityVals = array();
 		foreach ($entities as $entity) {
 			$entityVals[] = OrmUtilities::entityToArray($entity);
@@ -89,6 +92,7 @@ class projectService extends abstractService implements interfaceService {
 
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
+		$this->response->addContent('count', $count);
 
 		return $this->response;
 	}

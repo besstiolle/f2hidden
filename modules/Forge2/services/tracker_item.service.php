@@ -91,6 +91,9 @@ class tracker_itemService extends abstractService implements interfaceService {
 											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit($pos, $n));
 
+		//counter
+		$count = OrmCore::countByExample($this->currentEntity, 
+											$example);
 		$entityVals = array();
 		foreach ($entities as $entities) {
 			$entityVals[] = OrmUtilities::entityToArray($entities);
@@ -98,6 +101,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
+		$this->response->addContent('count', $count);
 
 		return $this->response;
 	}

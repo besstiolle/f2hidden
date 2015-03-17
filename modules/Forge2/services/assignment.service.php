@@ -82,13 +82,16 @@ class assignmentService extends abstractService implements interfaceService {
 											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
 											new OrmLimit($pos, $n));
 
+		//counter
+		$count = OrmCore::countByExample($this->currentEntity, 
+											$example);
 		$entityVals = array();
 		foreach ($entities as $entity) {
 			$entityVals[] = OrmUtilities::entityToArray($entity);
 		}
 
-
-		$this->response->addContent('assignment', $entityVals);
+		$this->response->addContent($this->jsonBlock, $entityVals);
+		$this->response->addContent('count', $count);
 
 		return $this->response;
 	}
