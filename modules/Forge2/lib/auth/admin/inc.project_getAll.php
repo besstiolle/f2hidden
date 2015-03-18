@@ -7,5 +7,5 @@ $fieldsRequired = [
 
 
 $fieldsOptional = [
-	
+	'project_type',	
 				];

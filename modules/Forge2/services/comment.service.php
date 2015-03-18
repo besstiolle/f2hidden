@@ -79,7 +79,7 @@ class commentService extends abstractService implements interfaceService {
 											new OrmLimit($pos, $n));
 
 		//counter
-		$count = OrmCore::countByExample($this->currentEntity, 
+		$count = OrmCore::selectCountByExample($this->currentEntity, 
 											$example);
 		$entityVals = array();
 		foreach ($entities as $entities) {

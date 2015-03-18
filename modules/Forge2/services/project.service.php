@@ -58,8 +58,6 @@ class projectService extends abstractService implements interfaceService {
 			$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array($this->params['project_type']));
 		}
 		
-		//$example->addCriteria('state', OrmTypeCriteria::$EQ, array(EnumProjectState::accepted));
-		//$example->addCriteria('project_type', OrmTypeCriteria::$EQ, array(EnumProjectType::module));
 
 		//Number of element to return. Min = 1, default = 10
 		$n = 10;
@@ -83,8 +81,9 @@ class projectService extends abstractService implements interfaceService {
 											new OrmLimit($pos, $n));
 
 		//counter
-		$count = OrmCore::countByExample($this->currentEntity, 
+		$count = OrmCore::selectCountByExample($this->currentEntity, 
 											$example);
+
 		$entityVals = array();
 		foreach ($entities as $entity) {
 			$entityVals[] = OrmUtilities::entityToArray($entity);

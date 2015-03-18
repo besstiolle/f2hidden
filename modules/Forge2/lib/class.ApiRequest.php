@@ -120,6 +120,11 @@ class ApiRequest {
 		}
 
 		$pattern = '#^[0-9]+$#';
+		if(isset($params['project_type']) && preg_match($pattern, $params['project_type'])){
+			$sanitized['project_type'] = $params['project_type'];
+		}
+
+		$pattern = '#^[0-9]+$#';
 		if(isset($params['commentable_id']) && preg_match($pattern, $params['commentable_id'])){
 			$sanitized['commentable_id'] = $params['commentable_id'];
 		}
