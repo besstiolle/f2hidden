@@ -11,4 +11,6 @@ $config['db_prefix'] = 'cms_';
 $config['timezone'] = 'Europe/Paris';
 $config['url_rewriting'] = 'mod_rewrite';
 $config['page_extension'] = '';
+
+$config['developer_mode'] = 'TRUE';
 ?>
