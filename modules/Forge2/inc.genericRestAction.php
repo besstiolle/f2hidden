@@ -67,4 +67,4 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 echo $service->getResponse();
-exit;
+//exit;

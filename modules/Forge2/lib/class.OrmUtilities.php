@@ -5,7 +5,7 @@ class OrmUtilities{
 
 	public static function entityToArray($e){
 		$arrReturned = array();
-
+/*
 		$array = array();
 		if(get_parent_class($e) === 'OrmEntity'){
 			$array = $e->getValues();
@@ -21,7 +21,7 @@ class OrmUtilities{
 				$arrReturned[$key] = $value;
 			}
 		}
-		
+		*/
 		return $arrReturned;
 	}
 }
