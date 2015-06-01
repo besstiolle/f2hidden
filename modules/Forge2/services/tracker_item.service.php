@@ -2,7 +2,7 @@
 
 if (!function_exists("cmsms")) exit;
 
-class tracker_itemService exentityValstends abstractService implements interfaceService {
+class tracker_itemService extends abstractService implements interfaceService {
 	
 	protected $serviceName = 'tracker_item';
 
@@ -134,7 +134,7 @@ class tracker_itemService exentityValstends abstractService implements interface
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
+		$entityVals = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -164,7 +164,7 @@ class tracker_itemService exentityValstends abstractService implements interface
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
+		$entityVals = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);
