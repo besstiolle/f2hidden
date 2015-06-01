@@ -2,7 +2,7 @@
 
 if (!function_exists("cmsms")) exit;
 
-class tracker_itemService extends abstractService implements interfaceService {
+class tracker_itemService exentityValstends abstractService implements interfaceService {
 	
 	protected $serviceName = 'tracker_item';
 
@@ -37,10 +37,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 			$this->response->setCode(404); 
 		}
 
-		$entityVals = array();
-		foreach ($entities as $entities) {
-			$entityVals[] = OrmUtilities::entityToArray($entities);
-		}
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
 		return $this->response;
@@ -94,10 +91,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 		//counter
 		$count = OrmCore::selectCountByExample($this->currentEntity, 
 											$example);
-		$entityVals = array();
-		foreach ($entities as $entities) {
-			$entityVals[] = OrmUtilities::entityToArray($entities);
-		}
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
 
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -140,7 +134,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -170,7 +164,7 @@ class tracker_itemService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);

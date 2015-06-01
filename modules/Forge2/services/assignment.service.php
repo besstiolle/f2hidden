@@ -37,10 +37,7 @@ class assignmentService extends abstractService implements interfaceService {
 			$this->response->setCode(404); 
 		}
 
-		$entityVals = array();
-		foreach ($entities as $entity) {
-			$entityVals[] = OrmUtilities::entityToArray($entity);
-		}
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
 		return $this->response;
@@ -85,10 +82,7 @@ class assignmentService extends abstractService implements interfaceService {
 		//counter
 		$count = OrmCore::selectCountByExample($this->currentEntity, 
 											$example);
-		$entityVals = array();
-		foreach ($entities as $entity) {
-			$entityVals[] = OrmUtilities::entityToArray($entity);
-		}
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
 		$this->response->addContent('count', $count);
@@ -130,7 +124,7 @@ class assignmentService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -160,7 +154,7 @@ class assignmentService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);

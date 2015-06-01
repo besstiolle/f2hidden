@@ -13,7 +13,7 @@ $config['url_rewriting'] = 'mod_rewrite';
 $config['page_extension'] = '';
 
 $config['developer_mode'] = 'TRUE';
-$config['debug_to_log'] = 'true';
-$config['show_performance_info'] = 'true';
-$config['debug'] = 'true';
+#$config['debug_to_log'] = 'true';
+#$config['show_performance_info'] = 'true';
+#$config['debug'] = 'true';
 ?>

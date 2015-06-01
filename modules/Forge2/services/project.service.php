@@ -37,9 +37,7 @@ class projectService extends abstractService implements interfaceService {
 		}
 
 		$entityVals = array();
-		foreach ($entities as $entity) {
-			$entityVals[] = OrmUtilities::entityToArray($entity);
-		}
+		$entityVals[] = OrmUtils::entitiesToAbsoluteArray($entities);
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
 		return $this->response;
@@ -85,9 +83,7 @@ class projectService extends abstractService implements interfaceService {
 											$example);
 
 		$entityVals = array();
-		foreach ($entities as $entity) {
-			$entityVals[] = OrmUtilities::entityToArray($entity);
-		}
+		$entityVals[] = OrmUtils::entitiesToAbsoluteArray($entities);
 
 
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -129,7 +125,7 @@ class projectService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity created with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);
@@ -159,7 +155,7 @@ class projectService extends abstractService implements interfaceService {
 
 		//Save the entity
 		$entity = $entity->save();
-		$entityVals[] = OrmUtilities::entityToArray($entity);
+		$entityVals[] = OrmUtils::entityToAbsoluteArray($entity);
 
 		$this->response->addContent('info', 'entity updated with success');
 		$this->response->addContent($this->jsonBlock, $entityVals);
