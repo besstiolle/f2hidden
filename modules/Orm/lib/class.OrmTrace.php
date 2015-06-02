@@ -62,7 +62,7 @@ final class OrmTrace {
 	* inner url to the log file 
 	**/
 	protected static $logUrl;
-
+	
 	/**
 	* inner level of the module ORM
 	**/
