@@ -21,7 +21,10 @@ class ApiRequest {
 			throw new Exception("Error HTTP method ".$_SERVER['REQUEST_METHOD']." not supported ", 1);
 		}
 
-		$parametersGET = ApiRequest::sanitizeParameters($_GET);
+		//$parametersGET = ApiRequest::sanitizeParameters($_GET);
+		$parametersGET = ApiRequest::sanitizeParameters2($_GET);
+		
+
 		//$parametersPOST = ApiRequest::sanitizeParameters($_POST);
 		if(ApiRequest::isPOST()){
 			$parametersPOST = $_POST;
@@ -40,6 +43,13 @@ class ApiRequest {
 		} else {
 			throw new Exception("Error HTTP method ".$_SERVER['REQUEST_METHOD']." not supported ", 1);
 		}
+	}
+
+	// We remove parameters we know it's not necessary but used but CmsMadeSimple
+	public static function sanitizeParameters2($params){
+		unset($params['page']);
+		unset($params['try']);
+		return $params;
 	}
 
 	//TODO : remove this and put everything inside /auth/xxx/ files
@@ -134,7 +144,19 @@ class ApiRequest {
 			$sanitized['historizable_id'] = $params['historizable_id'];
 		}
 
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['package_id']) && preg_match($pattern, $params['package_id'])){
+			$sanitized['package_id'] = $params['package_id'];
+		}
 		
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['is_active']) && preg_match($pattern, $params['is_active'])){
+			$sanitized['is_active'] = $params['is_active'];
+		}
+		$pattern = '#^[0-9]+$#';
+		if(isset($params['is_public']) && preg_match($pattern, $params['is_public'])){
+			$sanitized['is_public'] = $params['is_public'];
+		}
 
 	/*	$pattern = '#^[0-9]+$#';
 		if(isset($params['projectId']) && preg_match($pattern, $params['projectId'])){

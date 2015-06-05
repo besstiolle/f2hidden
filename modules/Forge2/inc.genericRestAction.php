@@ -36,6 +36,16 @@ switch ($params['action']){
 		$service = new historyService($this->getPath(), $params);
 		break;
 
+	case 'package';
+		include('services/package.service.php');
+		$service = new packageService($this->getPath(), $params);
+		break;
+
+	case 'release';
+		include('services/release.service.php');
+		$service = new releaseService($this->getPath(), $params);
+		break;
+
 	default:
 		echo "You may forgot to implement action ".$params['action']." into genericRestAction.";
 		break;
@@ -65,6 +75,5 @@ switch ($_SERVER['REQUEST_METHOD']) {
 		# code...
 		break;
 }
-
 echo $service->getResponse();
-//exit;
+exit; //to avoid cmsmadesimple changing headers

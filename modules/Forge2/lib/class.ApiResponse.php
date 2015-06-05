@@ -65,8 +65,10 @@ class ApiResponse {
 
 		header($_SERVER["SERVER_PROTOCOL"]." ".$this->code." ".$this->message); 
 		http_response_code($this->code);
-		header('Content-Type: application/json');
-
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		header('Content-type: application/json');
+		
 		$json = array(
 					'request' => $this->params, //for debug only
 					'server' => array(

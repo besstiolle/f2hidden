@@ -2,11 +2,11 @@
 
 if (!function_exists("cmsms")) exit;
 
-class assignmentService extends abstractService implements interfaceService {
+class packageService extends abstractService implements interfaceService {
 	
-	protected $serviceName = 'assignment';
+	protected $serviceName = 'package';
 
-	protected $jsonBlock = 'assignments';
+	protected $jsonBlock = 'packages';
 
 	protected $currentEntity;
 
@@ -16,7 +16,7 @@ class assignmentService extends abstractService implements interfaceService {
 
 		$this->initResponse($path, $params);
 
-		$this->currentEntity = new Assignment();
+		$this->currentEntity = new Package();
 	}
 
 	function get(){
@@ -30,7 +30,7 @@ class assignmentService extends abstractService implements interfaceService {
 
 		$entities = OrmCore::findByExample($this->currentEntity, 
 											$example, 
-											null, //new OrmOrderBy(array('last_file_date' => OrmOrderBy::$DESC)), 
+											new OrmOrderBy(array('created_at' => OrmOrderBy::$DESC)), 
 											new OrmLimit(0, 10));
 
 		if(empty($entities)){
@@ -44,20 +44,19 @@ class assignmentService extends abstractService implements interfaceService {
 	}
 
 	function getAll(){
+
 		//Select by example
 		$example = new OrmExample();
-		if(!empty($this->params['role']) ) {
-			$example->addCriteria('role', OrmTypeCriteria::$EQ, array($this->params['role']));
-		}
-
 		if(!empty($this->params['project_id']) ) {
 			$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
 		}
-		
-		if(!empty($this->params['user_id']) ) {
-			$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
+		if(isset($this->params['is_active']) && $this->params['is_active'] != null) {
+			$example->addCriteria('is_active', OrmTypeCriteria::$EQ, array($this->params['is_active']));
 		}
-
+		if(isset($this->params['is_public']) && $this->params['is_public'] != null) {
+			$example->addCriteria('is_public', OrmTypeCriteria::$EQ, array($this->params['is_public']));
+		}
+		
 		//Number of element to return. Min = 1, default = 10
 		$n = 10;
 		if(!empty($this->params['n']) && preg_match('#^[0-9]+$#', $this->params['n'])){
@@ -103,14 +102,14 @@ class assignmentService extends abstractService implements interfaceService {
 
 		//Select by example
 		$example = new OrmExample();
+		$example->addCriteria('name', OrmTypeCriteria::$EQ, array($this->params['name']));
 		$example->addCriteria('project_id', OrmTypeCriteria::$EQ, array($this->params['project_id']));
-		$example->addCriteria('user_id', OrmTypeCriteria::$EQ, array($this->params['user_id']));
 
 		$entities = OrmCore::findByExample($this->currentEntity, $example);
 
 		if(!empty($entities)){
 			$this->response->setCode(400); 
-			$this->response->addContent('warn', 'the user is already assignated to the project');
+			$this->response->addContent('warn', 'entity with same name found for the project');
 			return;
 		}
 
