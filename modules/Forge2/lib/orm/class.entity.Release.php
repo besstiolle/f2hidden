@@ -62,7 +62,14 @@
 				, TRUE 
 				, NULL 
 			));
-
+			$this->add(new OrmField('files'	
+				, OrmCAST::$NONE
+				, NULL	
+				, TRUE 
+				, OrmKEY::$AK
+				, 'Released_file.release_id' 
+			));
+			
 			$this->garnishAutoincrement();
 			$this->garnishDefaultValue("is_active",1);
 
