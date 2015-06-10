@@ -44,6 +44,7 @@ class releaseService extends abstractService implements interfaceService {
 	}
 
 	function getAll(){
+
 		//Select by example
 		$example = new OrmExample();
 		if(!empty($this->params['package_id']) ) {
@@ -52,6 +53,10 @@ class releaseService extends abstractService implements interfaceService {
 		if(isset($this->params['is_active']) && $this->params['is_active'] != null) {
 			$example->addCriteria('is_active', OrmTypeCriteria::$EQ, array($this->params['is_active']));
 		}
+		if(!empty($this->params['showOlder']) && $this->params['showOlder'] && 
+			!empty($this->params['sid']) && $this->params['sid'])	{
+			$example->addCriteria('id', OrmTypeCriteria::$LT, array($this->params['sid']));
+		} 
 		
 		//Number of element to return. Min = 1, default = 10
 		$n = 10;
