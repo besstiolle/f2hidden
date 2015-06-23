@@ -11,6 +11,7 @@ $config['db_prefix'] = 'cms_';
 $config['timezone'] = 'Europe/Paris';
 $config['url_rewriting'] = 'mod_rewrite';
 $config['page_extension'] = '';
+$config['root_url'] = 'http://f2hidden.localhost';
 
 $config['developer_mode'] = 'TRUE';
 #$config['debug_to_log'] = 'true';
