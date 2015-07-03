@@ -108,11 +108,11 @@ class Forge2Migrate extends Orm
 	}
 
 	function LazyLoadFrontend() {
-		return false;
+		return true;
 	}
 
 	function LazyLoadAdmin() {
-		return false;
+		return true;
 	}
 
 	function InstallPostMessage() {
