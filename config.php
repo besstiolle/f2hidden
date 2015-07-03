@@ -15,6 +15,6 @@ $config['root_url'] = 'http://f2hidden.localhost';
 
 $config['developer_mode'] = 'TRUE';
 #$config['debug_to_log'] = 'true';
-#$config['show_performance_info'] = 'true';
+#$config['show_performance_info'] = 'true'; #inutile pour du retour Json de Forge2
 #$config['debug'] = 'true';
 ?>

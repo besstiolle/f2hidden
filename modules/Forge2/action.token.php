@@ -11,4 +11,4 @@ $response = OAuth::getNewToken($response);
 
 //Display result
 echo $response;
-exit;
+exit;  //to avoid cmsmadesimple changing headers
