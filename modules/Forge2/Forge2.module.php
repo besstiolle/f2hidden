@@ -112,10 +112,7 @@ class Forge2 extends Orm
 		$restRoutes = ['project', 'assignment', 'tracker_item', 'comment',
 					'history',
 					'package',
-					'release',
-					'files\/project\/avatar',
-					'files\/project\/show',
-					'files\/project\/release'];
+					'release'];
 		foreach ($restRoutes as $restRoute) {
 			
 			//get/delete/update a $restRoute
@@ -126,6 +123,17 @@ class Forge2 extends Orm
 			$route = $this->_generateRoute($prefix, $version, $restRoute);
 			$this->_add_static($route, array('action'=>$restRoute, '_all'=>TRUE));
 		}
+		
+		//Notification files rest routes
+		$restRoutes = [
+					'avatar' => 'files\/project\/avatar',
+					'show' => 'files\/project\/show',
+					'release' => 'files\/project\/release'];
+		foreach ($restRoutes as $action => $restRoute) {
+			$route = $this->_generateRoute($prefix, $version, $restRoute);
+			$this->_add_static($route, array('action'=>$action, '_all'=>TRUE));
+		}
+
 		//sandbox for quick test
 		$route = $this->_generateRoute($prefix, $version, 'sandbox');
 		$this->_add_static($route, array('action'=>'default'));
