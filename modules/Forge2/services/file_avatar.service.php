@@ -47,7 +47,7 @@ class file_avatarService extends abstractService implements interfaceService {
 				continue;
 			}
 
-			$entity = $this->currentEntity;
+			$entity = new ForgeFile();
 			$entity->set('name', $name);
 			$entity->set('url', $info['url']);
 			$entity->set('id_related', $this->params['sid']);
