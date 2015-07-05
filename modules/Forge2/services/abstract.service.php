@@ -14,6 +14,7 @@ abstract class abstractService implements interfaceService {
 		ApiRequest::allowMethods();
 
 		$this->initResponse($path, $params);
+
 	}
 
 	protected function initResponse($path, $params){

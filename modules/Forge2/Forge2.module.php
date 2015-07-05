@@ -24,6 +24,7 @@ require_once($pathShared.'class.EnumTrackerItemResolution.php');
 require_once($pathShared.'class.EnumTrackerItemSeverity.php');
 require_once($pathShared.'class.EnumTrackerItemState.php');
 require_once($pathShared.'class.EnumTrackerItemType.php');
+require_once($pathShared.'class.EnumForgeFile.php');
 
 class Forge2 extends Orm
 {   
@@ -36,11 +37,11 @@ class Forge2 extends Orm
 	}
 
 	function GetVersion() {
-		return '0.0.1';
+		return '0.0.2';
 	}
 
 	function GetDependencies() {
-		return array('Orm'=>'0.3.1');
+		return array('Orm'=>'0.3.3');
 	}
 
 	function GetHelp() {
@@ -126,9 +127,9 @@ class Forge2 extends Orm
 		
 		//Notification files rest routes
 		$restRoutes = [
-					'avatar' => 'files\/project\/avatar',
-					'show' => 'files\/project\/show',
-					'release' => 'files\/project\/release'];
+					'file_avatar' => 'files\/project\/'.$sid.'\/avatar',
+					'file_show' => 'files\/project\/'.$sid.'\/show',
+					'file_release' => 'files\/project\/'.$sid.'\/release'];
 		foreach ($restRoutes as $action => $restRoute) {
 			$route = $this->_generateRoute($prefix, $version, $restRoute);
 			$this->_add_static($route, array('action'=>$action, '_all'=>TRUE));

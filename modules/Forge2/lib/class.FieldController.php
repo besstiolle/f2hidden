@@ -37,7 +37,7 @@ class FieldController{
 		// the Parameter is not know 
 		if(!file_exists($patterns)){
 			$response->setCode(400); 
-			$response->setMessage("Bad Request".$patterns.' ' .$definitions);
+			$response->setMessage("Bad Request (".$patterns.' not found)'); //TODO : remove after dev
 			echo $response;
 			exit;
 		}
@@ -45,7 +45,7 @@ class FieldController{
 		// the Parameter is know but is not linked for the action
 		if(!file_exists($definitions) ){
 			$response->setCode(405);
-			$response->setMessage("Method not allowed");
+			$response->setMessage("Method not allowed (".$definitions.' not found)');  //TODO : remove after dev
 			echo $response;
 			exit;
 		}
@@ -94,7 +94,7 @@ class FieldController{
 			}
 
 			if(!in_array($fieldName, $fieldsOptional) && !in_array($fieldName, $fieldsRequired)){
-				$this->notice[] = 'field '.$fieldName.' was unexpected and have been dropped from request';
+				$this->notice[] = 'field '.$fieldName.' was unexpected and has been dropped from request';
 				unset($this->params[$fieldName]);
 				continue;
 			}

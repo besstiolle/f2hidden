@@ -46,6 +46,21 @@ switch ($params['action']){
 		$service = new releaseService($this->getPath(), $params);
 		break;
 
+	case 'file_avatar';
+		include('services/file_avatar.service.php');
+		$service = new file_avatarService($this->getPath(), $params);
+		break;
+
+	case 'file_show';
+		include('services/file_show.service.php');
+		$service = new file_showService($this->getPath(), $params);
+		break;
+
+	case 'file_release';
+		include('services/file_release.service.php');
+		$service = new file_releaseService($this->getPath(), $params);
+		break;
+
 	default:
 		echo "You may forgot to implement action ".$params['action']." into genericRestAction.";
 		break;
