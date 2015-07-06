@@ -46,12 +46,17 @@ class file_avatarService extends abstractService implements interfaceService {
 			if(!array_key_exists('url', $info)){
 				continue;
 			}
+			if(!array_key_exists('md5', $info)){
+				continue;
+			}
 
 			$entity = new ForgeFile();
 			$entity->set('name', $name);
 			$entity->set('url', $info['url']);
 			$entity->set('id_related', $this->params['sid']);
 			$entity->set('type', $this->type);
+			$entity->set('md5', $info['md5']);
+
 			$entity->set('created_at',time());
 			
 			//Save the entity

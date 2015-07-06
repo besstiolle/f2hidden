@@ -24,6 +24,12 @@
 				, NULL 
 				, NULL 
 			));
+			$this->add(new OrmField('md5'	
+				, OrmCAST::$STRING
+				, 32	
+				, NULL 
+				, NULL 
+			));
 			$this->add(new OrmField('type'	
 				, OrmCAST::$INTEGER
 				, 1	
