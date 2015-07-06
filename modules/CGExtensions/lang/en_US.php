@@ -2,6 +2,7 @@
 
 ## A
 $lang['accessdenied'] = "Access Denied. Please check your permissions.";
+$lang['add_lkp_entry'] = 'Add new item';
 $lang['align_lc'] = "Bottom Center";
 $lang['align_ll'] = "Bottom Left";
 $lang['align_lr'] = "Bottom Right";
@@ -33,6 +34,7 @@ $lang['cache_modulecalls'] = "Cache module calls";
 $lang['cache_noexpiry'] = "Do not expire (use with caution)";
 $lang['cache_settings'] = "Cache Settings";
 $lang['cancel'] = "Cancel";
+$lang['checksum'] = 'Checksum';
 $lang['CGFILEUPLOAD_BADDESTDIR'] = "The destination directory specified for uploaded files does not exist";
 $lang['CGFILEUPLOAD_BADPERMS'] = "File permissions do not allow writing the uploaded file in its destination location";
 $lang['CGFILEUPLOAD_FILEEXISTS'] = "A file with the same name already exists";
@@ -45,16 +47,31 @@ $lang['countries'] = 'Countries';
 
 ## D
 $lang['default_templates'] = "Default Templates";
+$lang['del_lkpitem'] = 'Delete lookup item';
+$lang['description'] = 'Description';
 $lang['down'] = "Down";
 
 ## E
 $lang['edit'] = "Edit";
+$lang['edit_lkpitem'] = 'Edit lookup item';
 $lang['error'] = "Error!";
 $lang['error_image_transform'] = "Error Transforming Image";
+$lang['error_itemnotfound'] = 'The item specified could not be found';
 $lang['error_missingparam'] = "A required parameter was missing or invalid";
+$lang['error_lkp_namerequired'] = 'A name is required for this lookup item';
 $lang['error_template'] = "Error Template";
 $lang['error_templatenamebad'] = "Invalid template name.  Only alphanumeric characters, and _ are allowed";
 $lang['error_templatenameexists'] = "A Template by that Name Already Exists";
+$lang['err_modulenotfound'] = 'Could not get module instance for %s';
+$lang['err_vrfy_c1filebad'] = 'The _c1.dat file for the module being tested is invalid or corrupt.';
+$lang['err_vrfy_extrafiles'] = 'Files not distributed with the module exist in the module directory.  This effects signature generation';
+$lang['err_vrfy_failed'] = 'Module failed validation tests.  It appears that one or more files have been modified after distribution';
+$lang['err_vrfy_filenotfound'] = 'Problem reading %s.  Either it does not exist or there is a permissions issue.';
+$lang['err_vrfy_nochecksumdata'] = 'Cannot verify integrity of %s.  There is no checksum data';
+$lang['err_vrfy_nofiledata'] = 'Problem verifying module.  There is no file data to work with.';
+$lang['err_vrfy_rootpath'] = 'Problem reading %s.  It does not appear to exist within the module directory, but elsewhere.';
+$lang['err_vrfy_dirwritable'] = 'The directory at %s is not writable.  Cannot create checksum files';
+$lang['err_vrfy_filewritable'] = 'The file at %s is not writable.  Cannot create checksum files';
 
 ## F
 $lang['font'] = "Font";
@@ -63,15 +80,19 @@ $lang['friendlyname'] = "Calguys Module Extensions";
 
 ## G
 $lang['general_settings'] = "General Settings";
+$lang['generate'] = 'Generate';
+$lang['generate_module_checksums'] = 'Generate Module Checksums';
 $lang['go'] = 'Go';
 $lang['graphics_settings'] = "Graphics Settings";
 $lang['graphic_watermarks'] = "Graphical Watermarks";
 $lang['group'] = "Group";
 
 ## H
+$lang['has_checksum_data'] = 'Has Checksums';
 $lang['help'] = "Help";
 
 ## I
+$lang['id'] = 'Id';
 $lang['image'] = "Image";
 $lang['image_extensions'] = "Image File Extensions";
 $lang['info_allowed_upload_filetypes'] = "Specify a comma delimited list of file extensions that may be uploaded.  <strong>Note:</strong> Modules that use the CGExtensions upload capabilities may override these settings";
@@ -85,12 +106,21 @@ $lang['info_sysdefault_template'] = "System default templates are used when crea
 $lang['info_sysdefault_templates'] = "This template defines the default content of the template when you create a new template of the appropriate type.  Adjusting this content will have no immediate effect on your website";
 $lang['info_watermarks'] = "Watermarking is a method to prevent image theft.  Either an image, or some specified text is overlayed on top of the uploaded image.  If a graphical watermark is not specified, or cannot be found, and the text settings are specified, they will be used for watermarking of images";
 $lang['installed'] = "Module version %s installed.";
+$lang['info_vrfy_failed'] = 'We could not reliably verify the integrity of this module.  You may be inelligble for support for this module.';
+$lang['info_vrfy_nodata'] = 'There is no checksum data for this module at this time.  Please ensure that you are running the latest available version of this module';
+$lang['info_vrfy_signature'] = 'This module was successfully verified.  Please provide the following signature, along with version information and other pertinent details when asking for support.';
+
+## L
 
 ## M
 $lang['moddescription'] = "This module is a library of php classes used to build advanced forms";
+$lang['module_signature'] = 'Module integrity validated.<br/>Signature';
 $lang['msg_templatesaved'] = "Template saved";
+$lang['msg_vrfy_checksumgenerated'] = 'Checksum information generated for %s';
+$lang['msg_vrfy_integrityverified'] = 'Module passes checksum tests';
 
 ## N
+$lang['name'] = 'Name';
 $lang['no'] = "No";
 $lang['none'] = "None";
 
@@ -118,6 +148,7 @@ $lang['reset'] = 'Reset';
 $lang['resettofactory'] = "Reset to factory defaults";
 $lang['resize_image_to'] = "Maximum dimension of the resized image";
 $lang['resizing'] = "Image Resizing";
+$lang['return'] = 'Return';
 $lang['rgb_colors'] = "#F0F8FF-AliceBlue,
 #FAEBD7-AntiqueWhite,
 #00FFFF-Aqua,
@@ -265,8 +296,14 @@ $lang['rgb_colors'] = "#F0F8FF-AliceBlue,
 ## S
 $lang['selected'] = "Selected";
 $lang['select_one'] = "Select One";
+$lang['sortablelist_dragdrop'] = 'Drag and drop items between the two lists.  Drag the items in the selected list to change their order.';
+$lang['sortablelist_master'] = 'This is the list of items that are available.  Select items by dragging them to the to the other list.';
+$lang['sortablelist_selectlist'] = 'This is the list of items that are selected.  You can delete items by dragging them to the other list.  Drag the items to change their order.';
 $lang['sortablelist_templates'] = "Sortable List Area Templates";
 $lang['states'] = 'States';
+$lang['stat_vrfy_nodata'] = 'There is no checksum data for this module';
+$lang['stat_vrfy_failed'] = 'This module failed verification checks';
+$lang['stat_vrfy_passed'] = 'This module passed verification checks';
 $lang['submit'] = "Submit";
 $lang['sysdflt_sortablelist_template'] = "System default sortable list template";
 
@@ -277,6 +314,7 @@ $lang['text_color'] = "Text Color";
 $lang['text_watermarks'] = "Text Watermarks";
 $lang['thumbnailing'] = "Thumbnailing";
 $lang['thumbnail_size'] = "Size of thumbnails";
+$lang['title_vrfy_checksum'] = 'This is the calculated checksum of the module directory.';
 $lang['translucency'] = "Translucency";
 
 ## U
@@ -284,6 +322,10 @@ $lang['uninstalled'] = "Module Uninstalled.";
 $lang['up'] = "Up";
 $lang['upgraded'] = "Module upgraded to version %s.";
 $lang['use_transparency'] = "Use Transparency";
+
+## V
+$lang['verify_module_integrity'] = 'Verify module integrity';
+$lang['view_api_docs'] = 'View API Documentation';
 
 ## W
 $lang['watermarkerror_1000'] = "Watermarking is not properly configured";

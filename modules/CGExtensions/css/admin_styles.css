@@ -1,8 +1,8 @@
 /* a small, resizable text area */
-div.warning {
+div.warning,p.warning {
     display: block;
 }
-div.information {
+div.information,p.information {
     display: block;
 }
 textarea {
@@ -27,7 +27,17 @@ textarea.ta_resizable_lg {
   resize: both;
 }
 
+/* all system icons should be small */
+img.systemicon {
+    max-height: 16px;
+}
+
 /* format stuff aligned to the right */
+div.right-box,p.right-box {
+    float:right;
+    text-align: right;
+    padding-right: 1em;
+}
 .text-right {
     text-align: right !important;
 }
@@ -37,7 +47,7 @@ table td.text-right {
 .text-left {
     text-align: left !important;
 }
-table td.text-lef {
+table td.text-left {
     padding-left: 1em;
 }
 
@@ -68,6 +78,7 @@ ul.option-menu-horiz li {
     padding-right: 0.5em;
 }
 
+
 /* adjust goran's grid stuff for smaller screens */
 @media screen and (max-width: 1200px) {
   .grid_4 {
@@ -85,4 +96,20 @@ ul.option-menu-horiz li {
     width: auto !important;
     margin: auto !important;
   }
+}
+
+.cge_sig {
+    float: right;
+    background-color: #cee6f2;
+    border-radius: 4px;
+    padding: 0.25em;
+    border: 1px solid #058dc7;
+    margin-bottom: 0.25em;
+}
+.cge_sig > span {
+    margin-left: 0.25em;
+}
+.sig_error {
+    background-color: #f2d4ce !important;
+    border: 1px solid #ae432e !important;
 }

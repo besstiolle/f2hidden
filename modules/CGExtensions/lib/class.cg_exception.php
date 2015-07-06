@@ -36,6 +36,13 @@
 #END_LICENSE
 
 /**
+ * This file defines the cg_exception base class.
+ * @category Exceptions
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
  * A simple class library to extend the standard exception class
  * and provides ome cmsms related lang string lookups.
  *
@@ -71,13 +78,9 @@ class cg_exception extends \Exception
                 }
 
                 if( $module && $key ) {
-                    $mod = cms_utils::get_module($mod);
-                    if( $mod ) {
-                        $str = $mod->Lang($key);
-                    }
-                    if( isset($parts[2]) && $parts[2] ) {
-                        $str .= ' '.$parts[2];
-                    }
+                    $mod = \cms_utils::get_module($module);
+                    if( $mod ) $str = $mod->Lang($key);
+                    if( isset($parts[2]) && $parts[2] ) $str .= ' '.$parts[2];
                 }
             }
         }

@@ -36,6 +36,15 @@
 #END_LICENSE
 
 /**
+ * This file contains classes and utilities to assist modules.
+ *
+ * @package CGExtensions
+ * @category Utilities
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
  * The module helper class is an abstract class, intended to help separate functionality into different classes
  * Each instance of this class is a singleton.
  *
@@ -48,19 +57,38 @@ class module_helper
      */
     protected function __construct() {}
 
+    /**
+     * @ignore
+     */
     static public function &get_instance($name)
     {
         return cge_utils::get_module($name);
     }
 
-    static public function get_preference($modulename,$preference,$dflt = '')
+    /**
+     * Get a preference from a named module.
+     *
+     * @deprecated
+     * @param string $modulename The module name.
+     * @param string $preference The preference name.
+     * @param string $dflt The default value to return.
+     * @return string
+     */
+    static public function get_preference($modulename,$preference,$dflt = null)
     {
-        $module = self::get_instance($modulename);
+        $module = self::get_instance((string) $modulename);
         if( !$module ) return $dflt;
 
-        return $module->GetPreference($preference,$dflt);
+        return $module->GetPreference((string) $preference,$dflt);
     }
 
+    /**
+     * Return a list of all of the modules that have the specified method.
+     *
+     * @deprecated
+     * @param string $methodname
+     * @return string[]
+     */
     static public function get_modules_with_method($methodname)
     {
         $gCms = cmsms();
@@ -79,6 +107,14 @@ class module_helper
         return $res;
     }
 
+    /**
+     * Get a list of all of the modules that have the specified capability.
+     *
+     * @deprecated
+     * @param string $capability
+     * @param array $params
+     * @return string[]
+     */
     static public function get_modules_with_capability($capability,$params = array())
     {
         $mod = cms_utils::get_module('CGExtensions');

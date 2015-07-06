@@ -49,9 +49,9 @@ final class cge_smarty_plugins
     public static function smarty_function_cge_state_options($params,$smarty)
     {
         $db = \cge_utils::get_db();
-        $obj = cge_utils::get_module('CGExtensions');
+        $obj = \cge_utils::get_module(MOD_CGEXTENSIONS);
 
-        $query = 'SELECT * FROM '.CGEXTENSIONS_TABLE_STATES.' ORDER BY sorting DESC,name ASC';
+        $query = 'SELECT * FROM '.CGEXTENSIONS_TABLE_STATES.' ORDER BY sorting ASC,name ASC';
         $tmp = $db->GetAll($query);
         $output = '';
         if( isset($params['selectone']) ) $output .= '<option value="">'.trim($params['selectone'])."</option>\n";
@@ -69,9 +69,9 @@ final class cge_smarty_plugins
     public static function smarty_function_cge_country_options($params,$smarty)
     {
         $db = \cge_utils::get_db();
-        $obj = \cge_utils::get_module('CGExtensions');
+        $obj = \cge_utils::get_module(MOD_CGEXTENSIONS);
 
-        $query = 'SELECT * FROM '.CGEXTENSIONS_TABLE_COUNTRIES.' ORDER BY sorting DESC,name ASC';
+        $query = 'SELECT * FROM '.CGEXTENSIONS_TABLE_COUNTRIES.' ORDER BY sorting ASC,name ASC';
         $tmp = $db->GetAll($query);
         $output = '';
         if( isset($params['selectone']) ) $output .= '<option value="">'.trim($params['selectone'])."</option>\n";
@@ -103,7 +103,7 @@ final class cge_smarty_plugins
      */
     public static function smarty_function_cge_yesno_options($params,$smarty)
     {
-        $mod = cge_utils::get_module('CGExtensions');
+        $mod = cge_utils::get_module(MOD_CGEXTENSIONS);
         $name = '';
         $prefix = '';
         $selected = '';
@@ -111,7 +111,6 @@ final class cge_smarty_plugins
         $seltxt = '';
         $id = trim(cge_utils::get_param($params,'id'));
         $class = trim(cge_utils::get_param($params,'class'));
-
 
         if( isset($params['prefix']) ) $prefix = trim($params['prefix']);
         if( isset($params['name']) ) $name = trim($params['name']);
@@ -141,7 +140,7 @@ final class cge_smarty_plugins
     /*
      * A smarty plugin for testing if a module is available.
      */
-    public static function smarty_function_have_module($params, $smarty)
+    public static function plugin_have_module($params, $smarty)
     {
         $name = '';
         $trythis = array('module','mod','m');
@@ -151,10 +150,11 @@ final class cge_smarty_plugins
                 break;
             }
         }
-        if( empty($name) ) return;
-
-        $tmp = cge_utils::get_module($name);
-        $res = (is_object($tmp))?1:0;
+        $res = 0;
+        if( !empty($name) ) {
+            $tmp = cge_utils::get_module($name);
+            $res = (is_object($tmp))?1:0;
+        }
 
         if( isset($params['assign']) ) {
             $smarty->assign($params['assign'],$res);
@@ -175,7 +175,7 @@ final class cge_smarty_plugins
         if( !isset($params['image']) ) return;
 
         $alt = trim($params['image']);
-        if( isset($params['alt']) ) $alt = trim($params['alt']);
+        if( isset($params['alt']) ) $alt = htmlentities(trim($params['alt']),ENT_QUOTES);
         $class = '';
         if( isset($params['class']) ) $class = trim($params['class']);
         $height = '';
@@ -412,6 +412,8 @@ final class cge_smarty_plugins
             $required = cge_utils::to_bool($params['required']);
             if( $required && !$wysiwyg ) $addtext .= ' required';
         }
+        if( ($ph = cge_utils::get_param($params,'placeholder')) ) $addtext .= ' placeholder="'.$ph.'"';
+        if( ($maxlen = (int) cge_utils::get_param($params,'maxlength')) ) $addtext .= ' placeholder="'.$maxlen.'"';
 
         $output = create_textarea($wysiwyg,$content,$name,$class,$id,'','',$cols,$rows,'',$syntax,$addtext);
 
@@ -449,7 +451,7 @@ final class cge_smarty_plugins
     public static function cache_start($tag_arg,$smarty)
     {
         $output = '';
-        if( !cms_cache_handler::can_cache() ) {
+        if( !cms_cache_handler::get_instance()->can_cache() ) {
             $output = '{';
         }
         else {
@@ -481,7 +483,7 @@ final class cge_smarty_plugins
     public static function cache_end($tag_arg,$smarty)
     {
         $output = '';
-        if( !cms_cache_handler::can_cache() ) {
+        if( !cms_cache_handler::get_instance()->can_cache() ) {
             $output = '}';
         }
         else {
@@ -680,7 +682,7 @@ final class cge_smarty_plugins
 
     public static function smarty_modifier_createurl($input,$assume_root = TRUE)
     {
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
         $tmp = strtolower($input);
         if( startswith($tmp,'ftp') || startswith($tmp,'http') ) return $input;
         if( startswith($input,'/') && $assume_root ) {
@@ -714,7 +716,7 @@ final class cge_smarty_plugins
         if( !is_array($parts) || count($parts) == 0 ) return;
         if( $key ) $parts[] = $key;
 
-        $smarty = cmsms()->GetSmarty();
+        $smarty = CmsApp::get_instance()->GetSmarty();
         $name = $parts[0];
         $data = $smarty->get_template_vars($name);
         if( !$data ) $data = array();
@@ -890,7 +892,7 @@ final class cge_smarty_plugins
 
     public static function cge_file_list($params,$smarty)
     {
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
         $dir = '';
         $maxdepth = -1;
         $pattern = '*';
@@ -987,7 +989,7 @@ final class cge_smarty_plugins
 
     public static function cge_image_list($params,$smarty)
     {
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
         $dir = '';
         $maxdepth = -1;
         $pattern = array('*.jpg','*.jpeg','*.bmp','*.gif','*.png','*.ico');
@@ -1094,10 +1096,10 @@ final class cge_smarty_plugins
         $type = \cge_utils::get_param($params,'type');
         if( $type ) {
             if( version_compare(CMS_VERSION,'1.99-alpha0') < 1 ) {
-                cmsms()->set_variable('content-type',$type);
+                CmsApp::get_instance()->set_variable('content-type',$type);
             }
             else {
-                cmsms()->set_content_type($type);
+                CmsApp::get_instance()->set_content_type($type);
             }
         }
     }
@@ -1177,6 +1179,26 @@ final class cge_smarty_plugins
             return;
         }
         return $out;
+    }
+
+    public static function cge_pageoptions($params,$smarty)
+    {
+        $current = trim(cge_utils::get_param($params,'value'));
+        $current = trim(cge_utils::get_param($params,'selected'));
+        $none = cge_utils::to_bool(cge_utils::get_param($params,'none'));
+
+        $params['current'] = $current;
+        unset($params['value'],$params['selected'],$params['none']);
+
+        $builder = new \CGExtensions\content_list_builder($params);
+        $tmp = null;
+        if( $none ) {
+            $mod = cge_utils::get_module(MOD_CGEXTENSIONS);
+            $tmp .= '<option value="">'.$mod->Lang('none').'</option>';
+            $tmp .= '<option disabled="disabled">---</option>';
+        }
+        $tmp .= $builder->get_options();
+        return $tmp;
     }
 
 } // end of class

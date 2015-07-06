@@ -35,105 +35,112 @@
 #-------------------------------------------------------------------------
 #END_LICENSE
 
-class cge_template_admin
+/**
+ * This file defines the cge_template_admin class.
+ *
+ * @package CGExtensions
+ * @category Utilities
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
+ * This class provides methods for displaying forms and reports that aide in managing a module's templates.
+ */
+final class cge_template_admin
 {
-  /**
-   * Get a form for displaying a 'start' template.  A start template
-   * is read from a file, stored in the database, and is used when creating
-   * a new template of that type.
-   *
-   * @param object  The module that this template is for
-   * @param string  The module instance id.
-   * @param integer The returnid (usually empty)
-   * @param string  The preference (relative to the module supplied) that will hold this start template.
-   * @param string  The return action (usually defaultadmin)
-   * @param string  The name of the tab to return to.
-   * @param string  The title for this form.  Usually indicates to the administrator what template he is editing.
-   * @param string  The file name (relative to the modules templates directory) where the system default version of the 'start' template is.
-   * @param string  The info string for the form.
-   * @param bool    A flag indicating a simple form.
-   * @return string An HTML form.
-   */
-  static public function get_start_template_form(&$module,$id,$returnid,
-                                                 $prefname,$action,$active_tab,
-                                                 $title,$filename,$info = '',$simple = false)
+    /**
+     * @ignore
+     */
+    private function __construct() {}
+
+    /**
+     * Get a form for displaying a 'start' template.  A start template
+     * is read from a file, stored in the database, and is used when creating
+     * a new template of that type.
+     *
+     * @param CMSModule $module The module that this template is for
+     * @param string  $id The module instance id.
+     * @param int     $returnid The returnid (usually empty)
+     * @param string  $prefname The preference (relative to the module supplied) that will hold this start template.
+     * @param string  $action The return action (usually defaultadmin)
+     * @param string  $active_tab The name of the tab to return to.
+     * @param string  $title  The title for this form.  Usually indicates to the administrator what template he is editing.
+     * @param string  $filename The file name (relative to the modules templates directory) where the system default version of the 'start' template is.
+     * @param string  $info The info string for the form.
+     * @param bool    $simple A flag indicating a simple form.
+     * @return string An HTML form.
+     */
+    static public function get_start_template_form(&$module,$id,$returnid,
+                                                   $prefname,$action,$active_tab,
+                                                   $title,$filename,$info = '',$simple = false)
     {
-      static $counter = 0;
-      $smarty = cmsms()->GetSmarty();
-      $cgextensions = cge_utils::get_module('CGExtensions');
+        static $counter = 0;
+        $smarty = cmsms()->GetSmarty();
+        $cgextensions = cge_utils::get_module('CGExtensions');
 
-      $the_template = $module->GetTemplate($prefname);
-      if( !$the_template ) $the_template = $module->GetPreference($prefname);
+        $the_template = $module->GetTemplate($prefname);
+        if( !$the_template ) $the_template = $module->GetPreference($prefname);
 
-      $smarty->assign('simple',$simple);
-      $smarty->assign('defaulttemplateform_title',$title);
-      $smarty->assign('info_title',$info);
-      $smarty->assign('startform',
-		      $cgextensions->CreateFormStart($id,'setdefaulttemplate',$returnid,'post','',false,'',
-						     array('prefname'=>$prefname,
-							   'destmodule'=>$module->GetName(),
-							   'destaction'=>$action,
-							   'cg_activetab'=>$active_tab,
-							   'filename'=>$filename)));
-      $smarty->assign('prompt_template',$cgextensions->Lang('template'));
-      $smarty->assign('input_template',$cgextensions->CreateTextArea(false,$id,
-								     $the_template,
-								     'input_template'));
-      $smarty->assign('submit',$cgextensions->CreateInputSubmit($id,'submit',$cgextensions->Lang('submit')));
-      $smarty->assign('reset',$cgextensions->CreateInputSubmit($id,'resettodefault',
-							       $cgextensions->Lang('resettofactory')));
-      $smarty->assign('endform',$cgextensions->CreateFormEnd());
-      $smarty->assign('prefname',$prefname);
-      $smarty->assign('dflt_tpl_counter',$counter++);
-      return $cgextensions->ProcessTemplate('editdefaulttemplate.tpl');
+        $smarty->assign('simple',$simple);
+        $smarty->assign('defaulttemplateform_title',$title);
+        $smarty->assign('info_title',$info);
+        $smarty->assign('startform',
+                        $cgextensions->CreateFormStart($id,'setdefaulttemplate',$returnid,'post','',false,'',
+                                                       array('prefname'=>$prefname,
+                                                             'destmodule'=>$module->GetName(),
+                                                             'destaction'=>$action,
+                                                             'cg_activetab'=>$active_tab,
+                                                             'filename'=>$filename)));
+        $smarty->assign('prompt_template',$cgextensions->Lang('template'));
+        $smarty->assign('input_template',$cgextensions->CreateTextArea(false,$id,$the_template,'input_template'));
+        $smarty->assign('submit',$cgextensions->CreateInputSubmit($id,'submit',$cgextensions->Lang('submit')));
+        $smarty->assign('reset',$cgextensions->CreateInputSubmit($id,'resettodefault',$cgextensions->Lang('resettofactory')));
+        $smarty->assign('endform',$cgextensions->CreateFormEnd());
+        $smarty->assign('prefname',$prefname);
+        $smarty->assign('dflt_tpl_counter',$counter++);
+        return $cgextensions->ProcessTemplate('editdefaulttemplate.tpl');
     }
 
 
-  /**
-   * A function to provide a form to edit a single template.  Provides restore
-   * to factory default settings as well.
-   *
-   * @param object  The module that this template is for.
-   * @param string  The module action id.
-   * @param integer The returnid (usually empty)
-   * @param string  The template name
-   * @param string  The active tab name
-   * @param string  A title for the form, usually indicates which template this form is editing.
-   * @param string  The filename (relative to the modules templates directory) of the factory default template source.
-   * @param string  Optional help for this template
-   * @param string  The destination action (usually defaultadmin)
-   * @param bool    whether to output a simple form
-   * @return string An HTML form
-   */
-  public static function get_single_template_form(&$module,$id,$returnid,$tmplname,
-                                                  $active_tab,$title,$filename,
-                                                  $info = '',$destaction = 'defaultadmin',$simple = 0)
-  {
-      $cgextensions = cge_utils::get_module('CGExtensions');
-      $smarty = cmsms()->GetSmarty();
-      $title = trim($title);
-      if( $title ) $smarty->assign('defaulttemplateform_title',$title);
-      $smarty->assign('info_title',$info);
-      $smarty->assign('startform',
-                      $cgextensions->CreateFormStart($id,'setdefaulttemplate',$returnid,'post','',false,'',
-                                                     array('prefname'=>$tmplname,
-                                                           'usetemplate'=>'1',
-                                                           'destmodule'=>$module->GetName(),
-                                                           'cg_activetab'=>$active_tab,
-                                                           'destaction'=>$destaction,
-                                                           'filename'=>$filename)));
-      $smarty->assign('prompt_template',$cgextensions->Lang('template'));
-      $smarty->assign('input_template',$cgextensions->CreateTextArea(false,$id,
-                                                                     $module->GetTemplate($tmplname),
-                                                                     'input_template'));
-      $smarty->assign('simple',$simple);
-      $smarty->assign('submit',$cgextensions->CreateInputSubmit($id,'submit',$cgextensions->Lang('submit')));
-      $smarty->assign('reset',$cgextensions->CreateInputSubmit($id,'resettodefault',
-                                                               $cgextensions->Lang('resettofactory')));
-      $smarty->assign('endform',
-                      $cgextensions->CreateFormEnd());
-      return $cgextensions->ProcessTemplate('editdefaulttemplate.tpl');
-  }
+    /**
+     * A function to provide a form to edit a single template.  Provides restore
+     * to factory default settings as well.
+     *
+     * @param CMSModule $module The module that this template is for.
+     * @param string  $id The module action id.
+     * @param int     $returnid The returnid (usually empty)
+     * @param string  $tmplname The template name
+     * @param string  $active_tab The active tab name
+     * @param string  $title A title for the form, usually indicates which template this form is editing.
+     * @param string  $filename The filename (relative to the modules templates directory) of the factory default template source.
+     * @param string  $info Optional help for this template
+     * @param string  $destaction The destination action (usually defaultadmin)
+     * @param bool    $simple whether to output a simple form
+     * @return string An HTML form
+     */
+    public static function get_single_template_form(&$module,$id,$returnid,$tmplname,$active_tab,$title,$filename,
+                                                    $info = '',$destaction = 'defaultadmin',$simple = 0)
+    {
+        $cgextensions = cge_utils::get_module('CGExtensions');
+        $smarty = cmsms()->GetSmarty();
+        $title = trim($title);
+        if( $title ) $smarty->assign('defaulttemplateform_title',$title);
+        $smarty->assign('info_title',$info);
+        $smarty->assign('startform',
+                        $cgextensions->CreateFormStart($id,'setdefaulttemplate',$returnid,'post','',false,'',
+                                                       array('prefname'=>$tmplname,'usetemplate'=>'1',
+                                                             'destmodule'=>$module->GetName(),'cg_activetab'=>$active_tab,
+                                                             'destaction'=>$destaction,'filename'=>$filename)));
+        $smarty->assign('prompt_template',$cgextensions->Lang('template'));
+        $smarty->assign('input_template',$cgextensions->CreateTextArea(false,$id,$module->GetTemplate($tmplname),
+                                                                       'input_template'));
+        $smarty->assign('simple',$simple);
+        $smarty->assign('submit',$cgextensions->CreateInputSubmit($id,'submit',$cgextensions->Lang('submit')));
+        $smarty->assign('reset',$cgextensions->CreateInputSubmit($id,'resettodefault', $cgextensions->Lang('resettofactory')));
+        $smarty->assign('endform', $cgextensions->CreateFormEnd());
+        return $cgextensions->ProcessTemplate('editdefaulttemplate.tpl');
+    }
 } // end of class
 #
 # EOF

@@ -441,6 +441,7 @@ class AssocData
                 $qparms[] = $key4;
             }
         }
+        $db = $this->_db->Execute($query,$qparms);
         return TRUE;
     }
 

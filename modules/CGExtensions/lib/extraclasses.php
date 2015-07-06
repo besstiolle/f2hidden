@@ -35,9 +35,35 @@
 #-------------------------------------------------------------------------
 #END_LICENSE
 
+/**
+ * This file defines classes that are too small to be distributed in their own file.
+ *
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
+ * A class to indicate a database query error.
+ *
+ * @category Exceptions
+ */
 class cg_db_exception extends cg_exception {}
+
+/**
+ * A class to indicate a database query error.
+ *
+ * @category Exceptions
+ */
 class cg_sql_error extends cg_db_exception {}
+
+/**
+ * An exception indicating that invalid data was passed to a class, method, or action.
+ */
 class cg_InvalidDataException extends cg_exception {}
+
+/**
+ * An exception indicating that a desired item was not found.
+ */
 class cg_notfoundException extends cg_exception {}
 
 #

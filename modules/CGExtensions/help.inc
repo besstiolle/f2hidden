@@ -386,7 +386,24 @@ $(document).ready(function(){
      <li>{cge_message key='sample' value='bar'} - set the value of the key &quot;sample&quot; to &quot;bar&quot;</li>
    </ul>
 </li>
+
+<li class="top"><code class="tag">{cge_pageoptions [start_page=int|string] [selected=int|string] [show_navhidden=bool] [none=bool]}</code>
+   <p>Description: Generate a list of options for a select statement consisting of matching content pages.  This can be used to select a page as a module preference etc.</p>
+   <p>Arguments:</p>
+    <ul>
+     <li>&quot;start_page&quot; - (int|string) The page id or alias of the parent page.  Only the descendents of this page will be used in the output.</li>
+     <li>&quot;selected&quot; - (int|string) The page id or alias of the currently selected page.</li>
+     <li>&quot;show_navhidden&quot; - (bool) Wether or not to show content items that are marked as not shown in menu.</li>
+     <li>&quot;none&quot; - (bool) Wether or not to show a &quot;None&quot; option at the top of the list.</li>
+    </ul>
+   <p>Usage:</p>
+   <pre><code>&lt;select name="{$actionid}something"&gt;
+{cge_pageoptions selected=$some_preference}
+&lt;/select&gt;</code></pre>
+</li>
+
 </ul>
+
 
 <h3>Dynamic CSS and Javascript</h3>
 
@@ -410,14 +427,20 @@ $(document).ready(function(){
 <h4>Config Variables</h4>
 <p>This functionality listens to a few different <em>(optional)</em> variables in the config.php file:</p>
 <ul>
+  <li><code>$config['cge_prettyhtml']</code> = (bool:false)
+    <p>A flag indicating wether to prettify the HTML output after rendering.  Note:  The head section is not formatted.</p>
+  </li>
+  <li><code>$config['cge_minhtml']</code> = (bool:false)
+    <p>A flag indicating wether to minify the HTML output after rendering.   If both cge_prettyhtml and cge_minhtml are specified, cge_prettyhtml will have precedence.</p>
+  </li>
   <li><code>$config['cgjs_cachelife']</code> = (int:24)
-    The number of hours that each signature js and/or css file should be cached for, before being regenerated.  The default is 24 hours.
+    <p>The number of hours that each signature js and/or css file should be cached for, before being regenerated.  The default is 24 hours.</p>
   </li>
   <li><code>$config['cgjs_nocache']</code> = (bool:false)
-    This config entry, if set, and true explicitly disables caching.  The combined css and js files will be regenerated for each request.
+    <p>This config entry, if set, and true explicitly disables caching.  The combined css and js files will be regenerated for each request.</p>
   </li>
   <li><code>$config['cgjs_nominify']</code> = (bool:false)
-    This config entry, if set, and true explicitly disables minifying of javascript or CSS code.
+    <p>This config entry, if set, and true explicitly disables minifying of javascript or CSS code.</p>
   </li>
 </ul>
 
@@ -528,15 +551,13 @@ $(document).ready(function(){
 <p>TODO</p>
 
 <h3>Support</h3>
-<p>This module does not include commercial support. However, there are a number of resources available to help you with it:</p>
+<p>The module author is in no way obligated to provide support for this code in any fashion.  However, there are a number of resources available to help you with it:</p>
 <ul>
-<li>For the latest version of this module, FAQs, or to file a Bug Report or buy commercial support, please visit the cms development forge at <a href="http://dev.cmsmadesimple.org">dev.cmsmadesimple.org</a>.</li>
-<li>Additional discussion of this module may also be found in the <a href="http://forum.cmsmadesimple.org">CMS Made Simple Forums</a>.</li>
-<li>The author(s), calguy et all can often be found in the <a href="irc://irc.freenode.net/#cms">CMS IRC Channel</a>.</li>
-<li>Lastly, you may have some success emailing the author(s) directly.</li>
+<li>A bug tracking and feature request system has been created for this module <a href="http://dev.cmsmadesimple.org/projects/cgextensions">here</a>.  Please be verbose and descriptive when submitting bug reports and feature requests, and for bug reports ensure that you have provided sufficient information to reliably reproduce the issue.</li>
+<li>Additional discussion of this module may also be found in the <a href="http://forum.cmsmadesimple.org">CMS Made Simple Forums</a>.  When describing an issue please make an effort to privide all relavant information, a thorough description of your issue, and steps to reproduce it or your discussion may be ignored.</li>
+<li>The author, calguy1000, can often be found in the <a href="irc://irc.freenode.net/#cms">CMS IRC Channel</a>.</li>
+<li>Lastly, you may have some success emailing the author directly.  However, please use this as a last resort, and ensure that you have followed all applicable instructions on the forge, in the forums, etc.</li>
 </ul>
-<p>As per the GPL, this software is provided as-is. Please read the text
-of the license for the full disclaimer.</p>
 
 <h3>Copyright and License</h3>
 <p>Copyright &copy; 2008, Robert Campbel <a href="mailto:calguy1000@cmsmadesimple.org">&lt;calguy1000@cmsmadesimple.org&gt;</a>. All Rights Are Reserved.</p>

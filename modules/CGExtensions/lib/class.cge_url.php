@@ -39,7 +39,7 @@
  * A simple class for taking apart, modifying, and re-assembling URLS.
  *
  * @package CGExtensions
- * @category Exceptions
+ * @category Utilities
  * @author  calguy1000 <calguy1000@cmsmadesimple.org>
  * @copyright Copyright 2010 by Robert Campbell
  */

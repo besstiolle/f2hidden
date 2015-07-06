@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * This file contains the abstract resultset class.
+ *
+ * @package CGExtensions
+ * @category Query
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2014 by Robert Campbell
+ */
+
 namespace CGExtensions\query;
 
 /**
  * An abstract class to query the database and manage the results.
  */
-abstract class resultset
+abstract class resultset extends base_resultset
 {
     /**
      * A member to store the database recordset.
@@ -47,7 +56,7 @@ abstract class resultset
      *
      * This method should first see if the recordset has been set and not repeat the query... for the same of optimal behavior.
      */
-    abstract protected function _query();
+    //abstract protected function _query();
 
     /**
      * Get the number of records returned in this recordset.
@@ -122,6 +131,7 @@ abstract class resultset
     {
         if( $key == 'EOF' ) return $this->EOF();
         if( $key == 'fields' && $this->_rs && !$this->_rs->EOF() ) return $this->_rs->fields;
+        throw new \CmsInvalidDataException("$key is not a gettable member of ".__CLASS__);
     }
 
     /**
@@ -140,7 +150,7 @@ abstract class resultset
      *
      * @return object
      */
-    abstract public function &get_object();
+    //abstract public function &get_object();
 
     /**
      * Get a pagination object for this query and resultset
@@ -172,6 +182,8 @@ abstract class resultset
     /**
      * A convenience method used to aide in converting a string that may (or may not) contain wildcard (*) characters
      * into a string suitable for use in a substring match
+     *
+     * @param string $str The string to parse for wildcards.
      */
     protected function wildcard($str)
     {

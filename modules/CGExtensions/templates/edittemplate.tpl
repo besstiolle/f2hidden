@@ -16,7 +16,6 @@
   <p class="pageinput">{$template}</p>
 </div>
 <div class="pageoverflow">
-  <p class="pagetext">&nbsp;</p>
   <p class="pageinput">{$submit}{$cancel}{if isset($apply)}{$apply}{/if}</p>
 </div>
 {$formend}

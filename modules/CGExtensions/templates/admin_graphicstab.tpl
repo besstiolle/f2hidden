@@ -1,4 +1,8 @@
-<div class="pageoverflow">{$mod->Lang('info_graphicssettings')}</div>
+<div class="information">{$mod->Lang('info_graphicssettings')}</div>
+
+<div class="pageoverflow">
+  <p class="pageinput">{$input_submit}</p>
+</div>
 
 <div class="pageoverflow">
   <p class="pagetext">{$prompt_imageextensions}:</p>
@@ -22,7 +26,7 @@
     <p class="pagetext">{$mod->Lang('resize_image_to')}:</p>
     <p class="pageinput">{$input_resizeimage}</p>
   </div>
-  
+
 </fieldset>
 
 <fieldset>
@@ -35,7 +39,7 @@
   <div class="pageoverflow">
     <p class="pagetext">{$mod->Lang('watermark_alignment')}</p>
     <p class="pageinput">{$input_alignment}</p>
-  </div> 
+  </div>
   <table class="pagetable">
     <tbody>
       <tr>
@@ -73,7 +77,7 @@
           <div class="pageoverflow">
             <p class="pagetext">{$mod->Lang('translucency')}</p>
             <p class="pageinput">{$input_translucency}</p>
-          </div> 
+          </div>
         </fieldset>
         </td>
         <td valign="top">
@@ -82,7 +86,7 @@
           <div class="pageoverflow">
             <p class="pagetext">{$mod->Lang('image')}</p>
             <p class="pageinput">{$input_image}</p>
-          </div> 
+          </div>
           </fieldset>
         </td>
       </tr>
@@ -101,8 +105,3 @@
     <p class="pageinput">{$input_thumbnailsize}</p>
   </div>
 </fieldset>
-
-<div class="pageoverflow">
-  <p class="pagetext">&nbsp;</p>
-  <p class="pageinput">{$input_submit}</p>
-</div> 

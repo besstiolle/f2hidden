@@ -1,11 +1,32 @@
 <?php
 
+/**
+ * This file defines the csvfileresultset class
+ *
+ * @package CGExtensions
+ * @category Query
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
 namespace CGExtensions\query;
 
+/**
+ * A class to return records out of a csv file, suitable for using in some reports.
+ *
+ * @property string $fields Get the current record (in this case a line).
+ * @see csvfilequery
+ */
 class csvfileresultset extends txtfileresultset
 {
+    /**
+     * @ignore
+     */
     private $_loaded;
 
+    /**
+     * @ignore
+     */
     protected function _query()
     {
         parent::_query();
@@ -18,6 +39,9 @@ class csvfileresultset extends txtfileresultset
         $obj->seek($this->_filter['offset']); // just in case
     }
 
+    /**
+     * @ignore
+     */
     public function __get($key)
     {
         if( $key == 'fields' ) {

@@ -36,8 +36,7 @@
 #END_LICENSE
 
 /**
- * A simple class for utilities related to manipulating directories.
- * and searching.  and to include builtin caching
+ * A simple class for utilities related to manipulating images
  *
  * @package CGExtensions
  * @category Utilities
@@ -46,8 +45,7 @@
  */
 
 /**
- * A simple class for utilities related to manipulating directories.
- * and searching.  and to include builtin caching
+ * A simple class for utilities related to manipulating images.
  *
  * @deprecated Do not use
  * @ignore

@@ -6,17 +6,17 @@
  You are free to modify this javascript and this template.  However, the php driver scripts look for a field named in the smarty variable {$selectarea_prefix}, and expect that to be a comma seperated list of values.
  *}
 
-{literal}
+
 <script type='text/javascript'>
-var allowduplicates = {/literal}{$allowduplicates};{literal}
-var selectlist = {/literal}"{$selectarea_prefix}_selectlist";{literal}
-var masterlist = {/literal}"{$selectarea_prefix}_masterlist";{literal}
-var addbtn = {/literal}"{$selectarea_prefix}_add";{literal}
-var rembtn = {/literal}"{$selectarea_prefix}_remove";{literal}
-var upbtn = {/literal}"{$selectarea_prefix}_up";{literal}
-var downbtn = {/literal}"{$selectarea_prefix}_down";{literal}
-var valuefld = {/literal}"{$selectarea_prefix}";{literal}
-var max_selected = {/literal}{$max_selected};{literal}
+var allowduplicates = {$allowduplicates};
+var selectlist = "{$selectarea_prefix}_selectlist";
+var masterlist = "{$selectarea_prefix}_masterlist";
+var addbtn = "{$selectarea_prefix}_add";
+var rembtn = "{$selectarea_prefix}_remove";
+var upbtn = "{$selectarea_prefix}_up";
+var downbtn = "{$selectarea_prefix}_down";
+var valuefld = "{$selectarea_prefix}";
+var max_selected = {$max_selected};
 
 function selectarea_update_value()
 {
@@ -30,7 +30,7 @@ function selectarea_update_value()
       tmp[tmp.length] = opts[i].value;
     }
   var str = tmp.join(',');
-  val_elem.value = str;  
+  val_elem.value = str;
 }
 
 function selectarea_handle_down()
@@ -76,11 +76,10 @@ function selectarea_handle_remove()
 {
   var sel_elem = document.getElementById(selectlist);
   var sel_idx = sel_elem.selectedIndex;
-  if( sel_idx >= 0 )
-    {
-      var val = sel_elem.options[sel_idx].value;
-      sel_elem.remove(sel_idx);
-    }
+  if( sel_idx >= 0 ) {
+    var val = sel_elem.options[sel_idx].value;
+    sel_elem.remove(sel_idx);
+  }
   selectarea_update_value();
 }
 
@@ -91,20 +90,17 @@ function selectarea_handle_add()
   var sel_elem = document.getElementById(selectlist);
   var opts = sel_elem.getElementsByTagName('option');
   if( opts.length >= max_selected && max_selected > 0) return;
-  if( mas_idx >= 0 )
-    {
+  if( mas_idx >= 0 ) {
       var newOpt = document.createElement('option');
       newOpt.text = mas_elem.options[mas_idx].text;
       newOpt.value = mas_elem.options[mas_idx].value;
-      if( allowduplicates == 0 )
-        {
-          for( var i = 0; i < opts.length; i++ )
-          {
-            if( opts[i].value == newOpt.value ) return;
-          }
+      if( allowduplicates == 0 ) {
+        for( var i = 0; i < opts.length; i++ ) {
+          if( opts[i].value == newOpt.value ) return;
         }
+      }
       sel_elem.add(newOpt,null);
-    }
+  }
   selectarea_update_value();
 }
 
@@ -122,31 +118,30 @@ function selectarea_handle_select()
 }
 
 </script>
-{/literal}
 
- <table>
-   <tr>
-     <td>
+<table>
+  <tr>
+    <td>
       {* left column - for the selected items *}
       {$label_left}<br/>
       <select id="{$selectarea_prefix}_selectlist" size="10" onchange="selectarea_handle_select();">
         {html_options options=$selectarea_selected}
       </select><br/>
-     </td>
-     <td>
+    </td>
+    <td>
       {* center column - for the add/delete buttons *}
       <input type="submit" id="{$selectarea_prefix}_add" value="&lt;&lt;" onclick="selectarea_handle_add(); return false;"/><br/>
       <input type="submit" id="{$selectarea_prefix}_remove" value="&gt;&gt;" onclick="selectarea_handle_remove(); return false;"/><br/>
       <input type="submit" id="{$selectarea_prefix}_up" value="{$upstr}" onclick="selectarea_handle_up(); return false;"/><br/>
       <input type="submit" id="{$selectarea_prefix}_down" value="{$downstr}" onclick="selectarea_handle_down(); return false;"/><br/>
-     </td>
-     <td>
+    </td>
+    <td>
       {* right column - for the master list *}
       {$label_right}<br/>
       <select id="{$selectarea_prefix}_masterlist" size="10" onchange="selectarea_handle_select();">
         {html_options options=$selectarea_masterlist}
       </select>
-     </td>
-   </tr>
- </table>
- <div><input type="hidden" id="{$selectarea_prefix}" name="{$selectarea_prefix}" value="{$selectarea_selected_str}" /></div>
+    </td>
+  </tr>
+</table>
+<div><input type="hidden" id="{$selectarea_prefix}" name="{$selectarea_prefix}" value="{$selectarea_selected_str}" /></div>

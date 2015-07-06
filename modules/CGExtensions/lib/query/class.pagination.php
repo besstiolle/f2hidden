@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This class defines the pagination class.
+ *
+ * @package CGExtensions
+ * @category Query
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
 namespace CGExtensions\query;
 
 /**
@@ -108,9 +117,11 @@ class pagination implements \ArrayAccess
         return $list;
     }
 
-    /** Get a hash of page numbers suitable for using in a loop to build a navigation list.
+    /**
+     * Get a hash of page numbers suitable for using in a loop to build a navigation list.
      *
      * @see get_pagelit
+     * @param int $surround The number of pages around the current page (and the beginning and end) to return.
      * @return array
      */
     public function get_pagehash($surround = 3)

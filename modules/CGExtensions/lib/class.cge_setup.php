@@ -69,7 +69,7 @@ final class cge_setup
         $txt = $mod->GetPreference('watermark_text');
         $img = $mod->GetPreference('watermark_file');
 
-        $obj = new cg_watermark();
+        $obj = new \CGExtensions\watermarker;
         if( !empty($img) ) {
             $config = cmsms()->GetConfig();
             $obj->set_watermark_image($config['uploads_path'].'/'.$img);

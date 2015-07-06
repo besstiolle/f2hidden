@@ -56,39 +56,39 @@ $parse_text_options = function($txt) {
 
 $this->_current_tab = '';
 if( isset($params['submit_template']) ) {
-  if( isset($params['error_template'] ) ) $this->SetErrorTemplate(trim($params['error_template']));
+    if( isset($params['error_template'] ) ) $this->SetErrorTemplate(trim($params['error_template']));
 }
 else if( isset($params['resettofactory']) ) {
-  $this->ResetErrorTemplate();
+    $this->ResetErrorTemplate();
 }
 else if( isset($params['graphical_submit']) ) {
     $this->_current_tab = 'settings';
-  $this->SetPreference('watermark_text',trim($params['watermark_text']));
-  $this->SetPreference('watermark_textsize',(int)($params['watermark_textsize']));
-  $angle = (int)$params['watermark_angle'];
-  $angle = min(359,$angle);
-  $angle = max(0,$angle);
-  $this->SetPreference('watermark_textangle',sprintf("%d",$angle));
-  $this->SetPreference('watermark_font',trim($params['watermark_font']));
-  $this->SetPreference('watermark_textcolor',trim($params['watermark_textcolor']));
-  $this->SetPreference('watermark_bgcolor',trim($params['watermark_bgcolor']));
-  $this->SetPreference('watermark_transparent',(int)($params['watermark_transparent']));
-  $this->SetPreference('watermark_file',trim($params['watermark_file']));
-  $this->SetPreference('watermark_alignment',trim($params['watermark_alignment']));
-  $this->SetPreference('watermark_translucency',trim($params['watermark_translucency']));
-  $this->SetPreference('thumbnailsize',(int)$params['thumbnailsize']);
-  $this->SetPreference('imageextensions',trim($params['imageextensions']));
-  $this->SetPreference('allow_watermarking',(int)$params['allow_watermarking']);
-  $this->SetPreference('allow_resizing',(int)$params['allow_resizing']);
-  $this->SetPreference('delete_orig_image',(int)$params['delete_orig_image']);
-  $this->SetPreference('resizeimage',(int)$params['resizeimage']);
-  $this->SetPreference('allow_thumbnailing',(int)$params['allow_thumbnailing']);
+    $this->SetPreference('watermark_text',trim($params['watermark_text']));
+    $this->SetPreference('watermark_textsize',(int)($params['watermark_textsize']));
+    $angle = (int)$params['watermark_angle'];
+    $angle = min(359,$angle);
+    $angle = max(0,$angle);
+    $this->SetPreference('watermark_textangle',sprintf("%d",$angle));
+    $this->SetPreference('watermark_font',trim($params['watermark_font']));
+    $this->SetPreference('watermark_textcolor',trim($params['watermark_textcolor']));
+    $this->SetPreference('watermark_bgcolor',trim($params['watermark_bgcolor']));
+    $this->SetPreference('watermark_transparent',(int)($params['watermark_transparent']));
+    $this->SetPreference('watermark_file',trim($params['watermark_file']));
+    $this->SetPreference('watermark_alignment',trim($params['watermark_alignment']));
+    $this->SetPreference('watermark_translucency',trim($params['watermark_translucency']));
+    $this->SetPreference('thumbnailsize',(int)$params['thumbnailsize']);
+    $this->SetPreference('imageextensions',trim($params['imageextensions']));
+    $this->SetPreference('allow_watermarking',(int)$params['allow_watermarking']);
+    $this->SetPreference('allow_resizing',(int)$params['allow_resizing']);
+    $this->SetPreference('delete_orig_image',(int)$params['delete_orig_image']);
+    $this->SetPreference('resizeimage',(int)$params['resizeimage']);
+    $this->SetPreference('allow_thumbnailing',(int)$params['allow_thumbnailing']);
 }
 else if( isset($params['cache_submit']) ) {
     $this->_current_tab = 'cache_settings';
-  $this->SetPreference('cache_lifetime',(int)$params['cache_lifetime']);
-  $this->SetPreference('cache_filelock',(int)$params['cache_filelock']);
-  $this->SetPreference('cache_autoclean',(int)$params['cache_autoclean']);
+    $this->SetPreference('cache_lifetime',(int)$params['cache_lifetime']);
+    $this->SetPreference('cache_filelock',(int)$params['cache_filelock']);
+    $this->SetPreference('cache_autoclean',(int)$params['cache_autoclean']);
 }
 else if( isset($params['reset_states']) ) {
     $this->_current_tab = 'states';
@@ -132,6 +132,19 @@ else if( isset($params['submit']) ) {
     $this->_current_tab = 'general';
     $this->SetPreference('assume_memory_limit',trim($params['assume_memory_limit']));
     $this->SetPreference('alloweduploadfiles',trim($params['alloweduploadfiles']));
+}
+
+if( $this->CheckPermission('Modify Modules') ) {
+    echo '<div class="pageoptions">';
+
+    $url = $this->create_url($id,'verify_modules',$returnid);
+    echo '<a href="'.$url.'">'.$this->DisplayImage('icons/system/run.gif').' '.$this->Lang('verify_module_integrity').'</a>';
+
+    if( isset($config['cg_developer_mode']) && $config['cg_developer_mode'] ) {
+        $url = $this->create_url($id,'generate_module_checksums',$returnid);
+        echo '&nbsp;<a href="'.$url.'">'.$this->Lang('generate_module_checksums').'</a>';
+    }
+    echo '</div>';
 }
 
 echo $this->StartTabHeaders();

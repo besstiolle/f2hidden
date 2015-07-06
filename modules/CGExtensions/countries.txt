@@ -46,7 +46,7 @@ CX,Christmas Island
 CC,Cocos (Keeling) Islands
 CO,Colombia
 KM,Comoros
-CG,Congo
+CG,Republic of the Congo
 CK,Cook Islands
 CR,Costa Rica
 CI,Cote D'Ivoire
@@ -95,7 +95,7 @@ VA,Holy See (Vatican City State)
 HN,Honduras
 HK,Hong Kong
 HU,Hungary
-IS,Icel And
+IS,Iceland
 IN,India
 ID,Indonesia
 IR,Iran (Islamic Republic Of)
@@ -109,11 +109,11 @@ JO,Jordan
 KZ,Kazakhstan
 KE,Kenya
 KI,Kiribati
-KP,Korea, Dem People'S Republic
+KP,Korea, Dem People's Republic
 KR,Korea, Republic Of
 KW,Kuwait
 KG,Kyrgyzstan
-LA,Lao People'S Dem Republic
+LA,Lao People's Dem Republic
 LV,Latvia
 LB,Lebanon
 LS,Lesotho
@@ -148,7 +148,7 @@ NA,Namibia
 NR,Nauru
 NP,Nepal
 NL,Netherlands
-AN,Netherlands Ant Illes
+AN,Netherlands Antilles
 NC,New Caledonia
 NZ,New Zealand
 NI,Nicaragua
@@ -175,12 +175,12 @@ RE,Reunion
 RO,Romania
 RU,Russian Federation
 RW,Rwanda
-KN,Saint K Itts And Nevis
+KN,Saint Kitts And Nevis
 LC,Saint Lucia
 VC,Saint Vincent, The Grenadines
 WS,Samoa
 SM,San Marino
-ST,Sao Tome And Principe
+ST,São Tomé and Príncipe
 SA,Saudi Arabia
 SN,Senegal
 SC,Seychelles
@@ -199,7 +199,7 @@ PM,St. Pierre And Miquelon
 SD,Sudan
 SR,Suriname
 SJ,Svalbard, Jan Mayen Islands
-SZ,Sw Aziland
+SZ,Swaziland
 SE,Sweden
 CH,Switzerland
 SY,Syrian Arab Republic
@@ -226,7 +226,7 @@ UY,Uruguay
 UZ,Uzbekistan
 VU,Vanuatu
 VE,Venezuela
-VN,Viet Nam
+VN,Vietnam
 VG,Virgin Islands (British)
 VI,Virgin Islands (U.S.)
 WF,Wallis And Futuna Islands

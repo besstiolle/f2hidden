@@ -143,10 +143,10 @@ class CGExtensions extends CMSModule
             define('MOD_'.strtoupper($class),$class);
         }
 
-        if( self::$_initialized ) return;
+        if( self::$_initialized || $class != 'CGExtensions' ) return;
         self::$_initialized = TRUE;
 
-        // from here down only happens once per request.
+        // from here down only happens once per request (for CGExtensions only)
 
         // setup caching
         if( $class == 'CGExtensions' && !is_object(cms_cache_handler::get_instance()->get_driver()) ) {
@@ -170,11 +170,11 @@ class CGExtensions extends CMSModule
             cms_cache_handler::get_instance()->set_driver($driver);
         }
 
-        $smarty = cmsms()->GetSmarty();
+        $smarty = CmsApp::get_instance()->GetSmarty();
         if( !$smarty ) return;
 
         $smarty->register_function('cge_yesno_options','cge_smarty_plugins::smarty_function_cge_yesno_options');
-        $smarty->register_function('cge_have_module', array('cge_smarty_plugins','smarty_function_have_module'));
+        $smarty->register_function('cge_have_module', array('cge_smarty_plugins','plugin_have_module'));
 
         $smarty->register_block('cgerror', array('cge_smarty_plugins','blockDisplayError'));
         $smarty->register_block('jsmin', array('cge_smarty_plugins','jsmin'));
@@ -226,6 +226,9 @@ class CGExtensions extends CMSModule
         $smarty->register_block('cgjs_add',array('cge_smarty_plugins','cgjs_add'));
         $smarty->register_block('cgcss_add',array('cge_smarty_plugins','cgcss_add'));
 
+        // should be admin only
+        $smarty->register_function('cge_pageoptions',array('cge_smarty_plugins','cge_pageoptions'));
+
         $db = cms_utils::get_db();
         if( is_object($db) ) {
             $query = 'SET @CG_ZEROTIME = NOW() - INTERVAL 150 YEAR,@CG_FUTURETIME = NOW() + INTERVAL 5 YEAR';
@@ -249,6 +252,7 @@ class CGExtensions extends CMSModule
         if( !is_object($this) ) return FALSE;
 
         // check for classes.
+        //if( get_class($this) != MOD_CGEXTENSIONS) cms_utils::get_module('CGExtensions');
         $path = $this->GetModulePath().'/lib';
         if( strpos($classname,'\\') !== FALSE ) {
             $t_path = str_replace('\\','/',$classname);
@@ -261,21 +265,28 @@ class CGExtensions extends CMSModule
         }
 
         $fn = $path."/class.{$classname}.php";
-        if( file_exists($fn) ) {
+        if( is_file($fn) ) {
             require_once($fn);
             return TRUE;
         }
 
         // check for interfaces
         $fn = $path."/interface.{$classname}.php";
-        if( file_exists($fn) ) {
+        if( is_file($fn) ) {
+            require_once($fn);
+            return TRUE;
+        }
+
+        // check for traits
+        $fn = $path."/trait.{$classname}.php";
+        if( is_file($fn) ) {
             require_once($fn);
             return TRUE;
         }
 
         // check for a master file
         $fn = $this->GetModulePath()."/lib/extraclasses.php";
-        if( file_exists($fn) ) {
+        if( is_file($fn) ) {
             require_once($fn);
             return TRUE;
         }
@@ -290,7 +301,7 @@ class CGExtensions extends CMSModule
     {
         switch( $key ) {
         case 'db':
-            return cge_utils::get_db();
+            return \CmsApp::get_instance()->GetDb();
 
         default:
             $out = parent::__get($key);
@@ -299,22 +310,16 @@ class CGExtensions extends CMSModule
     }
 
     /**
-     * Set parameters for this module.
-     *
-     * @deprecated
-     * @see CMSModule::SetParameters()
+     * @ignore
      */
-    public function SetParameters()
+    public function InitializeFrontend()
     {
-        parent::SetParameters();
-
+        parent::InitializeFrontend();
         $this->RestrictUnknownParams();
         $this->SetParameterType('cge_msg',CLEAN_STRING);
         $this->SetParameterType('cge_error',CLEAN_INT);
         $this->SetParameterType('nocache',CLEAN_INT);
-        $this->CreateParameter('nocache',0,$this->Lang('param_nocache'));
     }
-
 
     /**
      * @ignore
@@ -348,22 +353,16 @@ class CGExtensions extends CMSModule
     */
 
     /**
-     * The name of this module.  This is an abstract method.
-     *
-     * @see CMSModule::GetName()
-     * @abstract
-     * @return string
-     */
-    public function GetName() { return 'CGExtensions'; }
-
-    /**
      * The Friendly name for this module.  For use in the admin navigation.
      *
      * @see CMSModule::GetFriendlyName()
      * @abstract
      * @return string
      */
-    public function GetFriendlyName() { return $this->Lang('friendlyname'); }
+    public function GetFriendlyName() {
+        if( get_class($this) == 'CGExtensions' ) return $this->Lang('friendlyname');
+        return parent::GetFriendlyName();
+    }
 
     /**
      * Return the version of this module.
@@ -372,7 +371,11 @@ class CGExtensions extends CMSModule
      * @abstract
      * @return string
      */
-    public function GetVersion() { return '1.44.3'; }
+    public function GetVersion() {
+        if( get_class($this) == 'CGExtensions' ) return '1.48.5';
+        $str = parent::GetVersion();
+        return $str;
+    }
 
     /**
      * Return the help of this module.
@@ -381,7 +384,32 @@ class CGExtensions extends CMSModule
      * @abstract
      * @return string
      */
-    public function GetHelp() { return file_get_contents(__DIR__.'/help.inc'); }
+    public function GetHelp() {
+        $dir = $this->GetModulePath();
+        $out = '';
+        $fns1 = array('doc/help.inc','docs/help.inc','doc/help.html','docs/help.html','help.inc','help.html');
+        foreach( $fns1 as $p1 ) {
+            $test = cms_join_path($dir,$p1);
+            if( is_file($test) ) $out = file_get_contents($test);
+        }
+
+        // check if we have api documentation and we are not generating an XML document.
+        global $CMSMS_GENERATING_XML;
+        if( !isset($CMSMS_GENERATING_XML) ) {
+            $fns1 = array('doc/apidoc','doc/apidocs','docs/apidoc','docs/apidocs');
+            foreach( $fns1 as $p1 ) {
+                $test = cms_join_path($dir,$p1);
+                if( is_dir($test) ) {
+                    $url = $this->GetModuleURLPath()."/$p1";
+                    $cge = \cms_utils::get_module(MOD_CGEXTENSIONS);
+                    $lbl = $cge->Lang('view_api_docs');
+                    $out = "<p><a href=\"$url\">$lbl</a></p>" . $out;
+                    break;
+                }
+            }
+        }
+        return $out;
+    }
 
     /**
      * Return the Author of this module.
@@ -417,7 +445,10 @@ class CGExtensions extends CMSModule
      * @abstract
      * @return bool
      */
-    public function IsPluginModule() { return true; }
+    public function IsPluginModule() {
+        if( get_class($this) == 'CGExtensions' ) return true;
+        return parent::IsPluginModule();
+    }
 
     /**
      * Return if this module has an admin section.
@@ -426,7 +457,10 @@ class CGExtensions extends CMSModule
      * @abstract
      * @return string
      */
-    public function HasAdmin() { return true; }
+    public function HasAdmin() {
+        if( get_class($this) == 'CGExtensions' ) return true;
+        return parent::HasAdmin();
+    }
 
     /**
      * Return if this module handles events.
@@ -435,7 +469,10 @@ class CGExtensions extends CMSModule
      * @abstract
      * @return string
      */
-    public function HandlesEvents() { return true; }
+    public function HandlesEvents() {
+        if( get_class($this) == 'CGExtensions' ) return true;
+        return parent::HandlesEvents();
+    }
 
     /**
      * Get the section of the admin navigation that this module belongs to.
@@ -475,7 +512,7 @@ class CGExtensions extends CMSModule
      * @abstract
      * @return string
      */
-    public function MinimumCMSVersion() { return '1.11.9'; }
+    public function MinimumCMSVersion() { return '1.12'; }
 
     /**
      * Return a message to display after the module has been uninstalled.
@@ -493,7 +530,8 @@ class CGExtensions extends CMSModule
      */
     public function VisibleToAdminUser()
     {
-        return $this->CheckPermission('Modify Site Preferences') ||  $this->CheckPermission('Modify Templates');
+        if( get_class($this) == 'CGExtensions' ) return $this->CheckPermission('Modify Site Preferences') ||  $this->CheckPermission('Modify Templates');
+        return parent::VisibleToAdminUser();
     }
 
     /**
@@ -507,12 +545,11 @@ class CGExtensions extends CMSModule
     public function GetHeaderHTML()
     {
         $out = \CGExtensions\jsloader\jsloader::render();
-        $mod = cms_utils::get_module('CGExtensions');
+        $mod = cms_utils::get_module(MOD_CGEXTENSIONS);
         $css = $mod->GetModuleURLPath().'/css/admin_styles.css';
         $out .= '<link rel="stylesheet" href="'.$css.'"/>'."\n";
         return $out;
     }
-
 
     /**
      * A replacement for the built in DoAction method
@@ -558,7 +595,48 @@ class CGExtensions extends CMSModule
             }
         }
 
-        $smarty = cmsms()->GetSmarty();
+        /*
+        if( !CmsApp::get_instance()->is_frontend_request() && $this->CheckPermission('Modify Modules') ) {
+            // display module integrity stuff
+            // only to people with appropriate permission, and only on admin requests
+            // data is cached for one day (or until cache is cleared)
+            $cge = \cms_utils::get_module(MOD_CGEXTENSIONS);
+            $rec = \CGExtensions\internal\ModuleIntegrityTools::get_cached_status($this->GetName());
+            switch( $rec['status'] ) {
+            case -1: // no checksum stuff
+                // only display this once per day
+                if( !\cge_utils::done_today('module_sig'.$this->GetName()) ) {
+                    $out = '<div class="cge_sig sig_error" title="'.$cge->Lang('info_vrfy_nodata').'"/>';
+                    $out .= '<span>'.$rec['message'].'</span>';
+                    $out .= '</div>';
+                    $out .= '<div class="clearb"></div>';
+                    echo $out;
+                }
+                break;
+
+            case 0: // validation failed or some other error
+                $out = '<div class="cge_sig sig_error" title="'.$cge->Lang('info_vrfy_failed').'"/>';
+                $out .= '<span>'.$rec['message'].'</span>';
+                $out .= '</div>';
+                $out .= '<div class="clearb"></div>';
+                echo $out;
+                break;
+
+            case 1:
+                // it is all good, display the module signature.
+                $out = '<div class="cge_sig" title="'.$cge->Lang('info_vrfy_signature').'"/>';
+                $out .= $cge->Lang('module_signature').':';
+                $out .= '<span>'.$rec['checksum'].'</span>';
+                $out .= '</div>';
+                $out .= '<div class="clearb"></div>';
+                echo $out;
+                break;
+            }
+        }
+        */
+
+        // redundant for cmsms 2.0
+        $smarty = CmsApp::get_instance()->GetSmarty();
         $smarty->assign('actionid',$id);
         $smarty->assign('actionparams',$params);
         $smarty->assign('returnid',$returnid);
@@ -662,7 +740,9 @@ class CGExtensions extends CMSModule
         $cge = $this->GetModuleInstance('CGExtensions');
         if( empty($label_left) ) $label_left = $cge->Lang('selected');
         if( empty($label_right) ) $label_right = $cge->Lang('available');
-        $smarty = cmsms()->GetSmarty();
+        $smarty = CmsApp::get_instance()->GetSmarty();
+        $smarty->clear_assign('selectedarea_selected_str');
+        $smarty->clear_assign('selectedarea_selected');
         if( !empty($selected) ) {
             $sel = explode(',',$selected);
             $tmp = array();
@@ -672,7 +752,7 @@ class CGExtensions extends CMSModule
             $smarty->assign('selectarea_selected_str',$selected);
             $smarty->assign('selectarea_selected',$tmp);
         }
-        $smarty->assign_by_ref('cge',$cge);
+        $smarty->assign('cge',$cge);
         $smarty->assign('max_selected',$max_selected);
         $smarty->assign('label_left',$label_left);
         $smarty->assign('label_right',$label_right);
@@ -682,7 +762,12 @@ class CGExtensions extends CMSModule
         $smarty->assign('allowduplicates',$allowduplicates);
         $smarty->assign('upstr',$cge->Lang('up'));
         $smarty->assign('downstr',$cge->Lang('down'));
-        if( empty($template) ) $template = $cge->GetPreference('dflt_sortablelist_template');
+        if( empty($template) ) {
+            $template = $cge->GetPreference('dflt_sortablelist_template');
+        }
+        if( endswith($template,'.tpl') ) {
+            return $this->ProcessTemplate($template);
+        }
         return $cge->ProcessTemplateFromDatabase('sortablelists_'.$template);
     }
 
@@ -875,8 +960,9 @@ class CGExtensions extends CMSModule
      */
     function IsAdminAction()
     {
-        if( cmsms()->test_state(CmsApp::STATE_ADMIN_PAGE) && !cmsms()->test_state(CmsApp::STATE_INSTALL) &&
-            !cmsms()->test_state(CmsApp::STATE_STYLESHEET) ) {
+        $gCms = CmsApp::get_instance();
+        if( $gCms->test_state(CmsApp::STATE_ADMIN_PAGE) && !$gCms->test_state(CmsApp::STATE_INSTALL) &&
+            !$gCms->test_state(CmsApp::STATE_STYLESHEET) ) {
             return TRUE;
         }
         return FALSE;
@@ -983,9 +1069,9 @@ class CGExtensions extends CMSModule
      * @param string $txt The error message
      * @param string $class An optional class attribute value.
      */
-    function DisplayErrorMessage($txt,$class = 'error')
+    function DisplayErrorMessage($txt,$class = 'alert alert-danger')
     {
-        $smarty = cmsms()->GetSmarty();
+        $smarty = CmsApp::get_instance()->GetSmarty();
         $smarty->assign('cg_errorclass',$class);
         $smarty->assign('cg_errormsg',$txt);
         $res = $this->ProcessTemplateFromDatabase('cg_errormsg','',true,'CGExtensions');
@@ -1012,7 +1098,7 @@ class CGExtensions extends CMSModule
     function ResetErrorTemplate()
     {
         $fn = cms_join_path(__DIR__,'templates','orig_error_template.tpl');
-        if( file_exists( $fn ) ) {
+        if( is_file( $fn ) ) {
             $template = @file_get_contents($fn);
             $this->SetTemplate( 'cg_errormsg', $template,'CGExtensions' );
         }
@@ -1038,7 +1124,7 @@ class CGExtensions extends CMSModule
      */
     protected function get_state_list()
     {
-        $db = cge_utils::get_db();
+        $db = \CmsApp::get_instance()->GetDb();
         $query = 'SELECT * FROM '.CGEXTENSIONS_TABLE_STATES.' ORDER BY sorting ASC,name ASC';
         $tmp = $db->GetAll($query);
         return $tmp;
@@ -1057,7 +1143,7 @@ class CGExtensions extends CMSModule
         $tmp = $this->get_state_list();
         $result = array();
         for( $i = 0; $i < count($tmp); $i++ ) {
-            $rec =& $tmp[$i];
+            $rec = $tmp[$i];
             $result[$rec['code']] = $rec['name'];
         }
         return $result;
@@ -1100,7 +1186,7 @@ class CGExtensions extends CMSModule
      */
     protected function get_country_list()
     {
-        $db = cge_utils::get_db();
+        $db = \CmsApp::get_instance()->GetDb();
         $query = 'SELECT * FROM '.CGEXTENSIONS_TABLE_COUNTRIES.' ORDER BY sorting ASC,name ASC';
         $tmp = $db->GetAll($query);
         return $tmp;
@@ -1116,7 +1202,7 @@ class CGExtensions extends CMSModule
         $tmp = $this->get_country_list();
         $result = array();
         for( $i = 0; $i < count($tmp); $i++ ) {
-            $rec =& $tmp[$i];
+            $rec = $tmp[$i];
             $result[$rec['code']] = $rec['name'];
         }
         return $result;
@@ -1156,7 +1242,7 @@ class CGExtensions extends CMSModule
      */
     function GetCountry($the_acronym)
     {
-        $db = cge_utils::get_db();
+        $db = \CmsApp::get_instance()->GetDb();
         $query = 'SELECT name FROM '.CGEXTENSIONS_TABLE_COUNTRIES.' WHERE code = ?';
         $name = $db->GetOne($query,array($the_acronym));
         return $name;
@@ -1171,7 +1257,7 @@ class CGExtensions extends CMSModule
      */
     function GetState($the_acronym)
     {
-        $db = cge_utils::get_db();
+        $db = \CmsApp::get_instance()->GetDb();
         $query = 'SELECT name FROM '.CGEXTENSIONS_TABLE_STATES.' WHERE code = ?';
         $name = $db->GetOne($query,array($the_acronym));
         return $name;
@@ -1192,7 +1278,7 @@ class CGExtensions extends CMSModule
      */
     function CreateImageDropdown($id,$name,$selectedfile,$dir = '',$none = '')
     {
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
 
         if( startswith( $dir, '.' ) ) $dir = '';
         if( $dir == '' ) $dir = $config['image_uploads_path'];
@@ -1228,7 +1314,7 @@ class CGExtensions extends CMSModule
      */
     function CreateFileDropdown($id,$name,$selectedfile='',$dir = '',$extensions = '',$allownone = '',$allowmultiple = false,$size = 3)
     {
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
 
         if( $dir == '' ) $dir = $config['uploads_path'];
         else {
@@ -1501,9 +1587,9 @@ class CGExtensions extends CMSModule
     function CreateContentURL($pageid)
     {
         die('this is still used');
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
 
-        $contentops = cmsms()->GetContentOperations();
+        $contentops = ContentOperations::get_instance();
         $alias = $contentops->GetPageAliasFromID( $pageid );
 
         $text = '';
@@ -1671,11 +1757,12 @@ class CGExtensions extends CMSModule
      */
     function session_clear($key = '')
     {
+        $pkey = 'c'.md5(__FILE__);
         if( empty($key) ) {
-            unset($_SESSION[$this->GetName()]);
+            unset($_SESSION[$pkey]);
         }
         else {
-            unset($_SESSION[$this->GetName()][$key]);
+            unset($_SESSION[$pkey][$key]);
         }
     }
 
@@ -1687,8 +1774,9 @@ class CGExtensions extends CMSModule
      */
     function session_put($key,$value)
     {
-        if( !isset($_SESSION[$this->GetName()]) ) $_SESSION[$this->GetName()] = array();
-        $_SESSION[$this->GetName()][$key] = $value;
+        $pkey = 'c'.md5(__FILE__);
+        if( !isset($_SESSION[$pkey]) ) $_SESSION[$pkey] = array();
+        $_SESSION[$pkey][$key] = $value;
     }
 
     /**
@@ -1700,9 +1788,10 @@ class CGExtensions extends CMSModule
      */
     function session_get($key,$dfltvalue='')
     {
-        if( !isset($_SESSION[$this->GetName()]) ) return $dfltvalue;
-        if( !isset($_SESSION[$this->GetName()][$key]) ) return $dfltvalue;
-        return $_SESSION[$this->GetName()][$key];
+        $pkey = 'c'.md5(__FILE__);
+        if( !isset($_SESSION[$pkey]) ) return $dfltvalue;
+        if( !isset($_SESSION[$pkey][$key]) ) return $dfltvalue;
+        return $_SESSION[$pkey][$key];
     }
 
 
@@ -1731,12 +1820,15 @@ class CGExtensions extends CMSModule
     function resolve_alias_or_id($txt,$dflt = null)
     {
         $txt = trim($txt);
-        if( $txt ) {
-            $manager = cmsms()->GetHierarchyManager();
-            $node = $manager->find_by_tag('alias',$txt);
-            if( !isset($node) ) $node = $manager->find_by_tag('id',(int)$txt);
-            if( is_object($node) ) return (int)$node->get_tag('id');
+        $manager = CmsApp::get_instance()->GetHierarchyManager();
+        $node = null;
+        if( is_numeric($txt) && (int) $txt > 0 ) {
+            $node = $manager->find_by_tag('id',(int)$txt);
         }
+        else {
+            $node = $manager->find_by_tag('alias',$txt);
+        }
+        if( $node ) return (int)$node->get_tag('id');
         return $dflt;
     }
 
@@ -1837,7 +1929,7 @@ class CGExtensions extends CMSModule
   public function find_file($filename)
   {
       if( !$filename ) return;
-      $config = cmsms()->GetConfig();
+      $config = CmsApp::get_instance()->GetConfig();
       $dirlist = array();
       $dirlist[] = $config['root_path']."/module_custom/".$this->GetName();
       $dirlist[] = $config['root_path']."/module_custom/".$this->GetName()."/templates";
@@ -1845,8 +1937,29 @@ class CGExtensions extends CMSModule
       $dirlist[] = $this->GetModulePath()."/templates";
       foreach( $dirlist as $dir ) {
           $fn = "$dir/$filename";
-          if( file_exists($fn) ) return $fn;
+          if( is_file($fn) ) return $fn;
       }
+  }
+
+  /**
+   * A convenience method to generate a new smarty template object given a resource string,
+   * and a prefix.  This method will also automatically assign a few common smarty variables
+   * to the new scope.
+   *
+   * @param string $template_name The desired template name
+   * @param string $prefix an optional prefix for database templates.
+   * @return object
+   */
+  public function CreateSmartyTemplate($template_name,$prefix = null,$cache_id = null,$compile_id = null)
+  {
+      $smarty = CmsApp::get_instance()->GetSmarty();
+      $tpl = $smarty->createTemplate($this->CGGetTemplateResource($template_name,$prefix),$cache_id,$compile_id);
+      // should not be necessary.
+      $tpl->assign($this->GetName(),$this);
+      $tpl->assign('mod',$this);
+      $tpl->assign('actionid',$smarty->get_template_vars('actionid'));
+      $tpl->assign('actionparams',$smarty->get_template_vars('actionparams'));
+      return $tpl;
   }
 
   /**
@@ -1878,7 +1991,27 @@ class CGExtensions extends CMSModule
       if( endswith($template_name,'.tpl') ) return $this->ProcessTemplate($template_name);
       return $this->ProcessTemplateFromDatabase($prefix.$template_name);
   }
+
+  /**
+   * Get the name of the module that the current action is for.
+   * (only works with modules derived from CGExtensions).
+   * This method is useful to find the module action that was used to send an event.
+   *
+   * @return string
+   */
+  public function GetActionModule()
+  {
+      return cge_tmpdata::get('module');
+  }
+
 } // class
+
+function cgex_lang()
+{
+    $mod = \cms_utils::get_module(MOD_CGEXTENSIONS);
+    $args = func_get_args();
+    return call_user_func_array(array($mod,'Lang'),$args);
+}
 
 // EOF
 ?>

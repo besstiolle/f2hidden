@@ -178,8 +178,10 @@ class encrypted_store
         self::__make();
         $tmp = self::$_store->get(self::$_key,$key1,$key2,$key3);
         $tmp = base64_decode($tmp);
-        $data = unserialize(cge_encrypt::decrypt(self::$_enckey,$tmp));
-        return $data;
+        if( !$tmp ) return;
+        $tmp = cge_encrypt::decrypt(self::$_enckey,$tmp);
+        if( !$tmp ) return;
+        return @unserialize($tmp);
     }
 
     /**

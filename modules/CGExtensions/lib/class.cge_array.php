@@ -439,9 +439,9 @@ final class cge_array
      * Given a hash of records, where the key denotes the path separeted
      * with a delimieter, generate a tree of records.
      *
-     * @param array $hash The input hash
-     * @param string $delimiter.  The identifier delimiter (used on hash keys)
-     * @param string $baseval Internal use only
+     * @param array $hash  The input hash
+     * @param string $delimiter  The identifier delimiter (used on hash keys)
+     * @param string $baseval  Internal use only
      */
     static public function explode_to_tree($hash, $delimiter = '.', $baseval = false)
     {

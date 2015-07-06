@@ -37,6 +37,55 @@
 
 cge_headers::output_headers();
 
+$config = \CmsApp::get_instance()->GetConfig();
+if( $config['debug'] ) return;
+$pretty_html = \cge_param::get_bool($config,'cge_prettyhtml',false);
+$min_html = \cge_param::get_bool($config,'cge_minhtml',false);
+if( !$pretty_html && !$min_html ) return; // do nothin
+
+$in = $params['content'];
+if( strpos('</body>',$in) === FALSE ) $in = str_replace('</html>','</body></html>',$in);
+$the_head_parm = -1; $the_body_parm = -1;
+if( $pretty_html ) {
+    $the_head_parm = 1;
+    $the_body_parm = 4;
+}
+
+$page_top = $page_bottom = $page_middle = $head_section = $body_section = null;
+$matches = null;
+$do_parse = 0;
+if( preg_match('/<head.?>/i',$in,$matches,PREG_OFFSET_CAPTURE) ) {
+    $page_top = substr($in,0,$matches[0][1]+strlen($matches[0][0]));
+    if( $the_head_parm < 1 ) $page_top = trim(str_replace("\n",'',$page_top));
+    $in = substr($in,$matches[0][1]+strlen($matches[0][0]));
+}
+if( preg_match('~</head>\s*?<\s*body[^>]*>~i',$in,$matches,PREG_OFFSET_CAPTURE) ) {
+    $page_middle = substr($in,$matches[0][1],strlen($matches[0][0]));
+    $head_section = substr($in,0,$matches[0][1]);
+    $in = $body_section = substr($in,$matches[0][1]+strlen($matches[0][0]));
+    $do_parse = 1;
+}
+if( preg_match('+</(body|html)>+i',$in,$matches,PREG_OFFSET_CAPTURE) ) {
+    $page_bottom = substr($in,$matches[0][1]);
+    $body_section = substr($in,0,$matches[0][1]);
+}
+if( !$do_parse ) return;
+
+require_once(__DIR__.'/lib/htmLawed.php');
+$out = $page_top;
+if( $the_head_parm < 0 ) {
+    // minified head output
+    $head_section = preg_replace('/<!--(.*?)-->/','',$head_section);
+    $head_section = preg_replace('/>\s+</','><',$head_section);
+    $head_section = trim(str_replace("\n",'',$head_section));
+}
+$out .= $head_section;
+$html_conf = array('tidy'=>$the_body_parm,'schemes'=>'*:*');
+//$html_conf = array('tidy'=>$the_body_parm,'schemes'=>'*: mailto,http,https,ftp,file,tel');
+$out .= $page_middle.htmLawed($body_section,$html_conf);
+die($out);
+$params['content'] = $out;
+
 #
 # EOF
 #

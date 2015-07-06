@@ -1,56 +1,164 @@
 <?php
 
+/**
+ * This file defines the abstract tabular report generator class.
+ *
+ * @package CGExtensions
+ * @category Reports
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
 namespace CGExtensions\reports;
 
+/**
+ * An abstract class to aide in generating a tabular report.
+ */
 abstract class tabular_report_generator extends report_generator
 {
+    /**
+     * @ignore
+     */
     private   $_row;
+
+    /**
+     * @ignore
+     */
     private   $_prev_row;
+
+    /**
+     * @ignore
+     */
     protected $_record_number = 0;
 
-    protected function set_row($row)
+    /**
+     * @ignore
+     */
+    protected function set_row($input_row)
     {
+        // preprocess the data. so that we have values for all of our column keys
+        // even if the values are empty.
+        $rs = $this->report()->get_resultset();
+        $smarty = cmsms()->GetSmarty();
+        $row = array();
+        foreach( $this->report()->get_columns() as $key => $col ) {
+            $val = '';
+            if( isset($input_row[$key]) ) $val = $input_row[$key];
+            $row[$key] = $col->process_value($val,$rs);
+            $smarty->assign($key,$row[$key]);
+        }
+
         if( is_array($this->_row) ) $this->_prev_row = $this->_row;
         $this->_row = $row;
     }
 
-    protected function start() {}
-
+    /**
+     * @ignore
+     */
     protected function finish()
     {
         $this->do_group_footers(TRUE);
+        if( ($grp = $this->report()->get_report_group()) ) {
+            $this->do_group_footer($grp,'rpt');
+        }
     }
 
+    /**
+     * A callback function that is called before each and every line.
+     *
+     * @abstract
+     * @return void
+     */
     protected function before_line() {}
+
+    /**
+     * A callback function that is called after each and every line.
+     *
+     * @abstract
+     * @return void
+     */
     protected function after_line() {}
+
+    /**
+     * A callback function that is called before the start of outputing group footers.
+     *
+     * @abstract
+     * @return void
+     */
     protected function before_group_footers() {}
+
+    /**
+     * A callback function that is called after the outputing group footers.
+     *
+     * @abstract
+     * @return void
+     */
     protected function after_group_footers() {}
+
+    /**
+     * A callback function that is called before the outputing group headers.
+     *
+     * @abstract
+     * @return void
+     */
     protected function before_group_headers() {}
+
+    /**
+     * A callback function that is called after the outputing group headers.
+     *
+     * @abstract
+     * @return void
+     */
     protected function after_group_headers() {}
 
+    /**
+     * A callback function to draw a cell.
+     *
+     * @abstract
+     * @param tabular_report_cellfmt $cell
+     * @param string $contents the cell contents.
+     */
     abstract protected function draw_cell(tabular_report_cellfmt $cell,$contents);
 
-    protected function get_cell_contents($col_key,$tpl)
+    /**
+     * A function to get cell contents for the specified column of the current row.
+     *
+     * @param string $col_key The column key (must be a registered column)
+     * @param string $tpl The cell template.
+     * @return string The formatted cell contents.
+     */
+    protected function get_cell_contents($col_key,$tpl = null,$row = null)
     {
         $smarty = cmsms()->GetSmarty();
 
-        $val = $this->_row[$col_key];
+        $val = '';
+        if( !$row ) $row = $this->_row;
+        if( isset($row[$col_key]) ) $val = $row[$col_key];
+        $col = $this->report()->get_column($col_key);
+
         $smarty->assign('val',$val);
         $smarty->assign('value',$val);
 
-        $col = $this->report()->get_column($col_key);
         $smarty->assign('min',$col->get_min());
         $smarty->assign('max',$col->get_max());
         $smarty->assign('count',$col->get_count());
         $smarty->assign('sum',$col->get_sum());
         $smarty->assign('mean',$col->get_mean());
         $smarty->assign('median',$col->get_median());
-
-        $tmp = $smarty->fetch('string:'.$tpl);
+        $tmp = null;
+        if( $tpl ) $tmp = $smarty->fetch('string:'.$tpl);
         return $tmp;
     }
 
-    protected function get_group_cell_contents($col_key,$grp_key,$tpl)
+    /**
+     * A function to get cell contents for a group header or footer cell.
+     *
+     * @param string $col_key The column key (must be a registered column)
+     * @param string $grp_key The group key.
+     * @param string $tpl The cell template.
+     * @return string The formatted cell contents.
+     */
+    protected function get_group_cell_contents($col_key,$grp_key,$tpl,$row = null)
     {
         $smarty = cmsms()->GetSmarty();
         $col = $this->report()->get_column($col_key);
@@ -62,24 +170,41 @@ abstract class tabular_report_generator extends report_generator
         $smarty->assign('grp_mean',$col->get_grp_mean($grp_key));
         $smarty->assign('grp_median',$col->get_grp_median($grp_key));
         $smarty->assign('last_val',$this->_prev_row[$col_key]);
-        $contents = $this->get_cell_contents($col_key,$tpl);
+        $contents = $this->get_cell_contents($col_key,$tpl,$row);
         return $contents;
     }
 
+    /**
+     * A callback function called before each row.
+     *
+     * @abstract
+     * @return void
+     */
     protected function before_row()
     {
         $this->do_group_footers();
         $this->do_group_headers();
     }
 
+    /**
+     * A callback function called after each row.
+     *
+     * @abstract
+     * @return void
+     */
     protected function after_row()
     {
         $this->add_column_histories($this->_row);
         $this->_record_number++;
     }
 
-    // see if the value for the column watched by the group
-    // changed
+    /**
+     * Test if the value for a specified group has changed.
+     *
+     * @param tabular_report_defn_group $grp The group that references the watched column.
+     * @param array $row The data row.
+     * @return bool
+     */
     protected function changed(tabular_report_defn_group $grp,$row)
     {
         $col_key = $grp->get_column();
@@ -91,20 +216,28 @@ abstract class tabular_report_generator extends report_generator
         return FALSE;
     }
 
-    protected function before_group_header(tabular_report_defn_group $grp)
-    {
-        switch( $grp->get_before_action() ) {
-        case $grp::ACT_PAGE:
-        case $grp::ACT_LINE:
-            break;
-        }
-    }
+    /**
+     * A callback function that is called before a single group header is output.
+     *
+     * @abstract
+     * @param tabular_report_defn_group $grp
+     * @return void
+     */
+    protected function before_group_header(tabular_report_defn_group $grp) {}
 
-    protected function after_group_header(tabular_report_defn_group $grp)
-    {
-    }
+    /**
+     * A callback function that is called after a single group header is output.
+     *
+     * @abstract
+     * @param tabular_report_defn_group $grp
+     * @return void
+     */
+    protected function after_group_header(tabular_report_defn_group $grp) {}
 
-    protected function do_group_header(tabular_report_defn_group $grp,$idx)
+    /**
+     * @ignore
+     */
+    protected function do_group_header(tabular_report_defn_group $grp)
     {
         $lines = $grp->get_header_lines();
         if( count($lines) ) {
@@ -135,33 +268,47 @@ abstract class tabular_report_generator extends report_generator
         }
     }
 
+    /**
+     * @ignore
+     */
     protected function do_group_headers($do_headers = false)
     {
-        $grp_header_num = 0;
         $grps = $this->report()->get_groups();
         if( count($grps) ) {
             foreach( $grps as $grp ) {
+                $grp_header_num = 0;
                 if( $do_headers || $this->_record_number == 0 || $this->changed($grp,$this->_row) ) {
                     if( $grp_header_num == 0 ) $this->before_group_headers();
                     $this->do_group_header($grp,$grp_header_num);
-                    $grp_header_num++;
                 }
+                $grp_header_num++;
             }
         }
         if( $grp_header_num > 0 ) $this->after_group_headers();
     }
 
-    protected function before_group_footer(tabular_report_defn_group $grp)
-    {
+    /**
+     * A callback function that is called before a single group footer is generated.
+     *
+     * @abstract
+     * @param tabular_report_defn_group $grp
+     * @return void
+     */
+    protected function before_group_footer(tabular_report_defn_group $grp) {}
 
-    }
+    /**
+     * A callback function that is called after a single group footer is generated.
+     *
+     * @abstract
+     * @param tabular_report_defn_group $grp
+     * @return void
+     */
+    protected function after_group_footer(tabular_report_defn_group $grp) {}
 
-    protected function after_group_footer(tabular_report_defn_group $grp)
-    {
-
-    }
-
-    protected function do_group_footer(tabular_report_defn_group $grp,$idx)
+    /**
+     * @ignore
+     */
+    protected function do_group_footer(tabular_report_defn_group $grp)
     {
         $lines = $grp->get_footer_lines();
         if( count($lines) ) {
@@ -175,13 +322,13 @@ abstract class tabular_report_generator extends report_generator
                     $contents = null;
                     $fmt = $line->get_cell_format($key);
                     if( is_object($fmt) ) {
-                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),$fmt->get_template());
+                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),$fmt->get_template(),$this->_prev_row);
                     } else {
                         // there is no format information specified in the header line
                         // but we need to know stuff like (maybe background color, alignment, color etc)
                         // so get a format from the report
                         $fmt = $this->report()->get_column($key);
-                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),'');
+                        $contents = $this->get_group_cell_contents($key,$grp->get_column(),'',$this->_prev_row);
                     }
                     $this->draw_cell($fmt,$contents);
                     $col_idx += max(1,$fmt->get_span());
@@ -196,6 +343,9 @@ abstract class tabular_report_generator extends report_generator
         }
     }
 
+    /**
+     * @ignore
+     */
     protected function do_group_footers($do_footers = false)
     {
         $grp_footer_num = 0;
@@ -218,11 +368,14 @@ abstract class tabular_report_generator extends report_generator
         if( $grp_footer_num > 0 ) $this->after_group_footers();
     }
 
+    /**
+     * @ignore
+     */
     protected function add_column_histories($row)
     {
         foreach( $this->report()->get_columns() as $key => &$col ) {
-            $val = $row[$key];
             if( array_key_exists($key,$row) ) {
+                $val = $row[$key];
                 $col->add_history_value($val);
                 $grps = $this->report()->get_groups();
                 if( count($grps) ) {
@@ -234,6 +387,19 @@ abstract class tabular_report_generator extends report_generator
         }
     }
 
+    /**
+     * @ignore
+     */
+    protected function start()
+    {
+        if( ($grp = $this->report()->get_report_group()) ) {
+            $this->do_group_header($grp);
+        }
+    }
+
+    /**
+     * @ignore
+     */
     protected function each_row($row)
     {
         $this->set_row($row);
@@ -259,6 +425,5 @@ abstract class tabular_report_generator extends report_generator
     }
 
 } // end of class
-
 
 ?>

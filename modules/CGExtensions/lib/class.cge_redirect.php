@@ -78,7 +78,7 @@ final class cge_redirect
     public static function redirect301($page_alias)
     {
         // 1... get the page object
-        $contentops = cmsms()->GetContentOperations();
+        $contentops = CmsApp::get_instance()->GetContentOperations();
         $content = $contentops->LoadContentFromAlias($page_alias,true);
         if( is_object($content) ) {
             // 2... get the url
@@ -96,7 +96,7 @@ final class cge_redirect
      */
     public static function redirect404()
     {
-        $contentops = cmsms()->GetContentOperations();
+        $contentops = CmsApp::get_instance()->GetContentOperations();
 
         $url = '';
         $content = $contentops->LoadContentFromAlias('error404',true);
@@ -109,7 +109,7 @@ final class cge_redirect
         else {
             // using the old custom404 handler.
             // so just redirect to some nonsenseical url
-            $config = cmsms()->GetConfig();
+            $config = CmsApp::get_instance()->GetConfig();
             $base_url = $config['root_url'];
             $junkpage = str_shuffle(md5(rand(0,1000)));
             $junkpage = 'junk_'.substr($junkpage,0,4);
@@ -135,7 +135,7 @@ final class cge_redirect
             redirect($url);
         }
 
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
         if( startswith( $url, $config['root_url'] ) ) {
             $new_url = '';
             if( isset($config['ssl_url']) ) {
@@ -164,7 +164,7 @@ final class cge_redirect
             return;
         }
 
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
         if( $force ) {
             $new_url = str_replace('https:','http:',$url);
             redirect($new_url);

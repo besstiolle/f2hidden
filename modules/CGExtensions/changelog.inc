@@ -224,7 +224,7 @@
     <li>Fixes 1.9 compatibility stuff.</li>
     <li>Bug fixes</li>
     <li>Adds friendly class</li>
-  <ul>
+  </ul>
 </li>
 <li>Version 1.21.1
   <ul>
@@ -233,19 +233,19 @@
     <li>Aadds jsmin plugin.</li>
     <li>More functions in cge_string</li>
     <li>A couple more smarty plugins.</li>
-  <ul>
+  </ul>
 </li>
 <li>Version 1.21.2
   <ul>
     <li>Adds a new recursive glob method to cge_dir.</li>
     <li>Fixes to the cge_array::explode_with_key() method.</li>
     <li>Updates Help.</li>
-  <ul>
+  </ul>
 </li>
 <li>Version 1.21.3
   <ul>
     <li>Fixes an error in template handling stuff.</li>
-  <ul>
+  </ul>
 </li>
 <li>Version 1.21.5
   <ul>
@@ -401,7 +401,7 @@
     <li>New generic object sorting method.</li>
     <li>Adds more bots to the bot checker</li>
     <li>Bug fixes.</li>
-  <ul>
+  </ul>
 </li>
 <ii>Version 1.38.x
   <ul>
@@ -462,6 +462,60 @@
 	<li>Now require PHP 5.4.3 minimum.</li>
         <li>Rewrite cge_image::image_transform for CMSMS 2.0 compatibility (now does not depend on ImageManager)</li>
         <li>Namespace fixes.</li>
+        <li>Adds the GetActionModule() method to the CGExtensions class.</li>
+        <li>Improvements and fixes to the reporting and query classes.</li>
+  </ul>
+</li>
+<li>Version 1.45
+  <ul>
+	<li>Adds the content_list_builder class.</li>
+	<li>Minor reporting improvements.</li>
+	<li>Adds help improvements (modules no longer need the GetHelp() method).
+	<li>minor bug fixes.</li>
+        <li>Rework the watermarking classes. so that they can be re-used more.</li>
+  </ul>
+</li>
+<li>Version 1.46.x
+  <ul>
+	<li>Improvements to the reporting functionality.</li>
+	<li>Adds new lookup table class for use in future modules.</li>
+	<li>Fixes to html parsing so that self closing tags are now output as such.
+	   <p>This may break for xml specific environments or for HTML strict, but fixes the problem of <img/> tags being output as <img></img> etc.</p>
+	<li>Minor reporting improvements.</li>
+	<li>improved autoloader.</li>
+	<li>improved session_get(), session_put(), and session_clear() methods.</li>
+	<li>improvements to the encrypted_store() object.</li>
+	<li>minor fixes to the jsloader stuff.</li>
+	<li>numerous minor bug fixes.</li>
+  </ul>
+</li>
+<li>Version 1.47.x
+  <ul>
+	<li>Adds functionality for verifying and checking module integrity.
+	<p>Module verification stuff is displayed for admin requests, for people with the "Modify Modules" permission.  The data
+	is cached and only evaluated once per day per module.</p>
+	<p>A new action is available to generate a report of module signatures.</p>
+	</li>
+	<li>Adds the \cge_utils::done_today() convenience method.</li>
+  </ul>
+</li>
+<li>Version 1.48.x
+  <ul>
+	<li>Adds simple html minify and beutify (body only) based on config entries.</li>
+        <li>Clean up the http class, and make it more memory efficient when using curl.</li>
+	<li>Minor optimizations</li>
+	<li>Bug fixes.</li>
+  </ul>
+</li>
+<li>Version 1.48.3
+  <ul>
+	<li>Bug fixes.</li>
+  </ul>
+</li>
+<li>Version 1.48.4
+  <ul>
+	<li>Improvement to jsloader stuff.</li>
+	<li>Minor tweaks to cge_htmlpretty.</li>
   </ul>
 </li>
 </ul>

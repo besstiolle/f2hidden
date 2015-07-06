@@ -35,41 +35,75 @@
 #-------------------------------------------------------------------------
 #END_LICENSE
 
-class cge_template_utils
+/**
+ * A set of high level convenience methods.
+ *
+ * @package CGExtensions
+ * @category Utilities
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
+ * A class to provide some methods for managing templates.
+ */
+final class cge_template_utils
 {
-  public static function get_templates_by_prefix($mod = '',$prefix = '',$trim = false)
-  {
-    if( !is_object($mod) || !($mod instanceof CMSModule) ) $mod = cge_utils::get_module();
+    /**
+     * @ignore
+     */
+    private function __construct() {}
 
-    $templates = $mod->ListTemplates();
-    if( $prefix == '' ) return $templates;
-    
-    $items = array();
-    foreach( $templates as $onename ) {
-      if( preg_match('/^'.$prefix.'/',$onename) ) {
-	if( $trim ) {
-	  $items[] = substr($onename,strlen($prefix));
-	}
-	else {
-	  $items[] = $onename;
-	}
-      }
+    /**
+     * Get all of the templates for a specific (or the current moduel) that begin with a specified prefix.
+     *
+     * @param string $mod The module name.  If none specified, the current module is assumed.
+     * @param string $prefix A prefix to filter templates by.
+     * @param bool $trim Wether the prefix should be trimmed from the output array.
+     * @return string[]
+     */
+    public static function get_templates_by_prefix($mod = '',$prefix = '',$trim = false)
+    {
+        if( !is_object($mod) || !($mod instanceof CMSModule) ) $mod = cge_utils::get_module();
+
+        $templates = $mod->ListTemplates();
+        if( $prefix == '' ) return $templates;
+
+        $items = array();
+        foreach( $templates as $onename ) {
+            if( preg_match('/^'.$prefix.'/',$onename) ) {
+                if( $trim ) {
+                    $items[] = substr($onename,strlen($prefix));
+                }
+                else {
+                    $items[] = $onename;
+                }
+            }
+        }
+        return $items;
     }
-    return $items;
-  }
 
+    /**
+     * Get a list of templates in the form of a dropdown.
+     *
+     * @deprecated
+     * @param string $id The module action id.
+     * @param string $name The name of the dropdown.
+     * @param string $prefix The prefix for templates.
+     * @param string $selectedvalue The item that should be currently selected.
+     * @param string $addtext Additional text for the select element.
+     */
+    public static function create_template_dropdown($id,$name,$prefix = '',$selectedvalue = -1,$addtext = '')
+    {
+        $templates = self::get_templates_by_prefix('',$prefix);
+        $items = array();
+        foreach( $templates as $onename ) {
+            $tmp = substr($onename,strlen($prefix));
+            $items[$tmp] = $onename;
+        }
 
-  public static function create_template_dropdown($id,$name,$prefix = '',$selectedvalue = -1,$addtext = '')
-  {
-    $templates = self::get_templates_by_prefix('',$prefix);
-    $items = array();
-    foreach( $templates as $onename ) {
-      $tmp = substr($onename,strlen($prefix));
-      $items[$tmp] = $onename;
+        return cge_utils::get_module()->CreateInputDropdown($id,$name,$items,-1,$selectedvalue,$addtext);
     }
-
-    return cge_utils::get_module()->CreateInputDropdown($id,$name,$items,-1,$selectedvalue,$addtext);
-  }
 }
 
 #

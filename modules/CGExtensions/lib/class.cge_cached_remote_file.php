@@ -35,95 +35,176 @@
 #-------------------------------------------------------------------------
 #END_LICENSE
 
+/**
+ * This file contains the cge_cached_remote_file class and various utilities.
+ *
+ * @package CGExtensions
+ * @category Utilities
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
+ * A class to copy a remote URL to a local, temporary location for a specified amount of time.
+ *
+ * @package CGExtensions
+ */
 class cge_cached_remote_file
 {
-  private $_cache_timelimit = null;
-  private $_src_spec = null;
-  private $_cache_file = null;
+    /**
+     * @ignore
+     */
+    private $_cache_timelimit = null;
 
-  public function __construct($src, $timelimit = 0, $dest = '')
-  {
-    $this->_src_spec = $src;
-    if( $timelimit <= 0 ) $timelimit = 24*60;
-    $this->_cache_timelimit = $timelimit;
-    if( empty($dest) ) {
-      $bn = 'cache_'.md5($src);
-      $config = cmsms()->GetConfig();
-      $dest = cms_join_path(TMP_CACHE_LOCATION,$bn);
+    /**
+     * @ignore
+     */
+    private $_src_spec = null;
+
+    /**
+     * @ignore
+     */
+    private $_cache_file = null;
+
+    /**
+     * Constructor
+     *
+     * @param string $src The source URL
+     * @param int  $timelimit The amount of time in minutes before this file must be refreshed.  Default is 24 hours.
+     * @param string $dest Optional destination filename.
+     */
+    public function __construct($src, $timelimit = 0, $dest = '')
+    {
+        $this->_src_spec = $src;
+        if( $timelimit <= 0 ) $timelimit = 24*60;
+        $this->_cache_timelimit = $timelimit;
+        if( empty($dest) ) {
+            $bn = 'cache_'.md5($src);
+            $dest = cms_join_path(TMP_CACHE_LOCATION,$bn);
+        }
+        $this->_cache_file = $dest;
     }
-    $this->_cache_file = $dest;
-  }
 
-  public function get_source()
-  {
-    return $this->_src_spec;
-  }
-
-  public function get_dest()
-  {
-    return $this->_cache_file;
-  }
-
-  public function get_cache_timelimit()
-  {
-    return $this->_cache_timelimit;
-  }
-
-  public function set_cache_timelimit($minutes)
-  {
-    $this->_cache_timelimit = max(1,(int)$minutes);
-  }
-
-  private function refresh_cache()
-  {
-    @unlink($this->_cache_file);
-    $data = cge_http::get($this->_src_spec);
-    if( $data ) @file_put_contents($this->_cache_file,$data);
-  }
-
-  private function check_cache()
-  {
-    $need_update = false;
-    $mtime = -1;
-    if( !file_exists($this->_cache_file) ) {
-      $need_update = true;
+    /**
+     * Return the source URL
+     *
+     * @return string
+     */
+    public function get_source()
+    {
+        return $this->_src_spec;
     }
-    else {
-      $mtime = filemtime($this->_cache_file);
+
+    /**
+     * Get the destination filename
+     *
+     * @return string
+     */
+    public function get_dest()
+    {
+        return $this->_cache_file;
     }
-    if( $mtime + ($this->_cache_timelimit * 60) < time() ) $need_update = true;
-    if( $need_update ) $this->refresh_cache();
-  }
 
-  public function file()
-  {
-    $this->check_cache();
-    return @file($this->_cache_file);
-  }
+    /**
+     * Get the time limit
+     *
+     * @return int
+     */
+    public function get_cache_timelimit()
+    {
+        return $this->_cache_timelimit;
+    }
 
-  public function file_get_contents()
-  {
-    $this->check_cache();
-    return @file_get_contents($this->_cache_file);
-  }
+    /**
+     * Adjust the time limit
+     *
+     * @param int $minutes The number of minutes before this item needs refreshing
+     */
+    public function set_cache_timelimit($minutes)
+    {
+        $this->_cache_timelimit = max(1,(int)$minutes);
+    }
 
-  public function md5()
-  {
-    $this->check_cache();
-    return @md5_file($this->_cache_file);
-  }
+    /**
+     * @ignore
+     */
+    private function refresh_cache()
+    {
+        @unlink($this->_cache_file);
+        $data = cge_http::get($this->_src_spec);
+        if( $data ) @file_put_contents($this->_cache_file,$data);
+    }
 
-  public function size()
-  {
-    $this->check_cache();
-    return @filesize($this->_cache_file);
-  }
+    /**
+     * @ignore
+     */
+    private function check_cache()
+    {
+        $need_update = false;
+        $mtime = -1;
+        if( !file_exists($this->_cache_file) ) {
+            $need_update = true;
+        }
+        else {
+            $mtime = filemtime($this->_cache_file);
+        }
+        if( $mtime + ($this->_cache_timelimit * 60) < time() ) $need_update = true;
+        if( $need_update ) $this->refresh_cache();
+    }
 
-  public function cleanup()
-  {
-    @unlink($this->_cache_file);
-  }
-}
+    /**
+     * Return the entire cached file into an array
+     *
+     * @return array
+     * @see file()
+     */
+    public function file()
+    {
+        $this->check_cache();
+        return @file($this->_cache_file);
+    }
+
+    /**
+     * Return the contents of the cached file as a single string
+     *
+     * @return string
+     */
+    public function file_get_contents()
+    {
+        $this->check_cache();
+        return @file_get_contents($this->_cache_file);
+    }
+
+    /**
+     * Return the md5 signature of the cached file
+     *
+     * @return string
+     */
+    public function md5()
+    {
+        $this->check_cache();
+        return @md5_file($this->_cache_file);
+    }
+
+    /**
+     * Get the size of the cached file
+     *
+     * @return int
+     */
+    public function size()
+    {
+        $this->check_cache();
+        return @filesize($this->_cache_file);
+    }
+
+    /**
+     * Clean up the cached file.
+     */
+    public function cleanup()
+    {
+        @unlink($this->_cache_file);
+    }
+} // end of class.
 #
 # EOF
 #

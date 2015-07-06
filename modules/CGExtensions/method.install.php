@@ -96,10 +96,8 @@ if( file_exists($fn) ) {
 // add a contentpostrender event
 $this->AddEventHandler('Core','ContentPostRender',false);
 
-if( version_compare($oldversion,'1.40') >= 0 ) {
-    $loader = new CGExtensions\jsloader\libdefn('cg_cmsms');
-    $loader->callback = array('cge_jshandler','load');
-    \CGExtensions\jsloader\jsloader::register($loader);
-}
+$loader = new CGExtensions\jsloader\libdefn('cg_cmsms');
+$loader->callback = array('cge_jshandler','load');
+\CGExtensions\jsloader\jsloader::register($loader);
 
 ?>

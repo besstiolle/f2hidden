@@ -2,7 +2,7 @@
 <phpdoc>
   <title><![CDATA[CGExtensions by calguy1000]]></title>
   <parser>
-    <target>/tmp/CGExtensions/apidoc</target>
+    <target>/tmp/CGExtensions.x</target>
   </parser>
   <transformer>
     <target>docs/apidoc</target>
@@ -20,5 +20,8 @@
     <ignore>lib/class.Mail_RFC822.php</ignore>
     <ignore>lib/Progress2_Lite.php</ignore>
     <ignore>lib/class.POP3_Base.php</ignore>
+    <ignore>lib/class.internals.php</ignore>
+    <ignore>lib/class.Browser.php</ignore>
+    <ignore>lib/class.cge_smarty_plugins.php</ignore>
   </files>
 </phpdoc>

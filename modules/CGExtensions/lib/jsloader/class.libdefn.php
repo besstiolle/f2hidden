@@ -1,16 +1,48 @@
 <?php
 
+/**
+ * This file contains classes for defining a javascript library.
+ *
+ * @package CGExtensions
+ * @category jsloader
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2014 by Robert Campbell
+ */
+
 namespace CGExtensions\jsloader;
 
+/**
+ * A class to define a javascript library.
+ *
+ * @property string $name The library name
+ * @property callable $callback An optional callback of the form  function($name) to return javascript code.  Only one of the jsfile, jsurl, callback, or module properties must be specified.
+ * @property string[] $depends An array of library names that this library depends upon.
+ * @property string $jsfile The complete pathname to the javascript file for this library.  Only one of the jsfile, jsurl, callback, or module properties must be specified.
+ * @property string $cssfile The complete pathname to a css file to associate with this libarary
+ * @property string $jsurl A URL to a remote javascript library.  Only one of the jsfile, jsurl, callback, or module properties can be specified.
+ * @property string $cssurl A complete URL to a remote CSS library.
+ * @property string $module The name of a module to query to get javascript code.
+ */
 class libdefn
 {
+    /**
+     * @ignore
+     */
     private $_data = array();
 
+    /**
+     * Constructor
+     *
+     * @param string $name The name of the javascript library we are defiing (should not contain spaces or other characters that require encoding)
+     */
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->name = trim($name);
     }
 
+    /**
+     * @ignore
+     */
     public function __get($key)
     {
         $key = strtolower($key);
@@ -32,6 +64,9 @@ class libdefn
         }
     }
 
+    /**
+     * @ignore
+     */
     public function __isset($key)
     {
         $key = strtolower($key);
@@ -55,6 +90,9 @@ class libdefn
         }
     }
 
+    /**
+     * @ignore
+     */
     public function __set($key,$val)
     {
         $key = strtolower($key);
@@ -130,10 +168,7 @@ class libdefn
             break;
 
         case 'module':
-            $val = trim($val);
-            $obj = \cms_utils::get_module($val);
-            if( !is_object($obj) ) throw new \CmsInvalidDataException('module '.$val.' cannot be loaded');
-            $this->_data[$key] = $val;
+            $this->_data[$key] = trim($val);
             break;
 
         default:
@@ -141,6 +176,11 @@ class libdefn
         }
     }
 
+    /**
+     * Test if this object is valid.
+     *
+     * @return bool
+     */
     public function valid()
     {
         if( $this->name == '' ) return FALSE;

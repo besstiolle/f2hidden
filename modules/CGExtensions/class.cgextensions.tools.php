@@ -55,14 +55,14 @@ final class cgextensions_tools
     $parms = array();
     if( is_array( $params ) ) $parms = $params;
     if( $tab == '' ) {
-      if( $this->_module->_current_tab ) $tab = $this->_module->_current_tab;
+        if( $this->_module->_current_tab ) $tab = $this->_module->_current_tab;
     }
     if( $tab != '' ) $parms['cg_activetab'] = $tab;
     if( is_array($this->_module->_errormsg) && count($this->_module->_errormsg) ) {
-      $parms['cg_error'] = implode(':err:',$this->_module->_errormsg);
+        $parms['cg_error'] = implode(':err:',$this->_module->_errormsg);
     }
     if( is_array($this->_module->_messages) && count($this->_module->_messages) ) {
-      $parms['cg_message'] = implode(':err:',$this->_module->_messages);
+        $parms['cg_message'] = implode(':err:',$this->_module->_messages);
     }
 
     if( !$action && $this->_module->_current_action ) $action = $this->_module->_current_action;
@@ -95,8 +95,8 @@ final class cgextensions_tools
    */
   function DisplayImage($image,$alt='',$class='',$width='',$height='',$id='')
   {
-      $config = cmsms()->GetConfig();
-      if( !$class && !cmsms()->is_frontend_request() ) $class = 'systemicon';
+      $config = CmsApp::get_instance()->GetConfig();
+      if( !$class && !CmsApp::get_instance()->is_frontend_request() ) $class = 'systemicon';
 
       $img1 = basename($image);
 
@@ -146,12 +146,12 @@ final class cgextensions_tools
 				    $params, $warn_message, false, $inline,
 				    $addtext, $targetcontentonly, $prettyurl );
     if( $imageonly !== true ) {
-      $txt .= '&nbsp;';
-      $txt .= $this->_module->CreateLink
-	($id, $action, $returnid,
-	 $contents, $params, $warn_message, false,
-	 $inline, $addtext, $targetcontentonly,
-	 $prettyurl );
+        $txt .= '&nbsp;';
+        $txt .= $this->_module->CreateLink
+            ($id, $action, $returnid,
+             $contents, $params, $warn_message, false,
+             $inline, $addtext, $targetcontentonly,
+             $prettyurl );
     }
     return $txt;
   }
@@ -161,31 +161,29 @@ final class cgextensions_tools
    * An overridable function for creating a pretty link
    */
   function __CreatePrettyLink($id, $action, $returnid='', $contents='',
-			      $params=array(), $warn_message='',
-			      $onlyhref=false, $inline=false, $addtext='',
-			      $targetcontentonly=false, $prettyurl='')
+                              $params=array(), $warn_message='',
+                              $onlyhref=false, $inline=false, $addtext='',
+                              $targetcontentonly=false, $prettyurl='')
   {
-    $config = cmsms()->GetConfig();
+      $config = CmsApp::get_instance()->GetConfig();
 
-    $pretty = false;
-    if( $config['assume_mod_rewrite'] === true || $config['internal_pretty_urls'] === true ) {
-      $pretty = true;
-    }
+      $pretty = false;
+      if( $config['assume_mod_rewrite'] === true || $config['internal_pretty_urls'] === true ) $pretty = true;
 
-    $method_exists = method_exists($this->_module,'CreatePrettyLink');
-    if( $pretty && ($returnid != '') && $method_exists ) {
-      // pretty urls are configured, we're not in an admin action
-      // and the CreatePrettyLink method has been found.
-      return $this->_module->CreatePrettyLink($id,$action,$returnid,
-					      $contents,$params,
-					      $warn_message,
-					      $onlyhref,$inline,$addtext,
-					      $targetcontentonly,$prettyurl);
-    }
-    else {
-      return $this->_module->CreateLink($id,$action,$returnid,$contents,$params,$warn_message,
-					$onlyhref,$inline,$addtext,$targetcontentonly,$prettyurl);
-    }
+      $method_exists = method_exists($this->_module,'CreatePrettyLink');
+      if( $pretty && ($returnid != '') && $method_exists ) {
+          // pretty urls are configured, we're not in an admin action
+          // and the CreatePrettyLink method has been found.
+          return $this->_module->CreatePrettyLink($id,$action,$returnid,
+                                                  $contents,$params,
+                                                  $warn_message,
+                                                  $onlyhref,$inline,$addtext,
+                                                  $targetcontentonly,$prettyurl);
+      }
+      else {
+          return $this->_module->CreateLink($id,$action,$returnid,$contents,$params,$warn_message,
+                                            $onlyhref,$inline,$addtext,$targetcontentonly,$prettyurl);
+      }
   }
 
 
@@ -196,7 +194,7 @@ final class cgextensions_tools
   {
     // we're gonna allow multiple templates here
     // but we're gonna prefix them all with something
-    $smarty = cmsms()->GetSmarty();
+    $smarty = CmsApp::get_instance()->GetSmarty();
 
     $falseimage1 = cms_utils::get_theme_object()->DisplayImage('icons/system/false.gif','make default','','','systemicon');
     $trueimage1 = cms_utils::get_theme_object()->DisplayImage('icons/system/true.gif','default','','','systemicon');

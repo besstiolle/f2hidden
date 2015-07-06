@@ -35,32 +35,72 @@
 #-------------------------------------------------------------------------
 #END_LICENSE
 
+/**
+ * The definition for the cge_message class.
+ *
+ * @package CGExtensions
+ * @category Utilities
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
+ * A simple class for storing and retrieving data between requests.
+ *
+ * @package CGExtensions
+ * @deprected
+ */
 final class cge_message
 {
-  private static $_data;
+    /**
+     * @ignore
+     */
+    private static $_data;
 
-  private static function &_sess()
-  {
-    if( ! is_object(self::$_data) ) self::$_data = new cge_session(__CLASS__);
-    return self::$_data;
-  }
+    /**
+     * @ignore
+     */
+    private static function &_sess()
+    {
+        if( ! is_object(self::$_data) ) self::$_data = new cge_session(__CLASS__);
+        return self::$_data;
+    }
 
-  public static function set($key,$msg)
-  {
-    self::_sess()->put($key,$msg);
-  }
+    /**
+     * Set a message
+     *
+     * @param string $key
+     * @param string $msg
+     */
+    public static function set($key,$msg)
+    {
+        self::_sess()->put($key,(string) $msg);
+    }
 
-  public static function get($key,$dflt = null,$erase = TRUE)
-  {
-    $msg = self::_sess()->get($key,$dflt);
-    if( $erase ) self::_sess()->clear($key);
-    return $msg;
-  }
+    /**
+     * Get a message
+     *
+     * @param string $key
+     * @param string $dflt
+     * @param bool   $erase Whether the data should be erased after retrieval.
+     * @return string
+     */
+    public static function get($key,$dflt = null,$erase = TRUE)
+    {
+        $msg = self::_sess()->get($key,$dflt);
+        if( $erase ) self::_sess()->clear($key);
+        return $msg;
+    }
 
-  public static function erase($key)
-  {
-    $msg = self::_sess()->erase($key);
-  }
+    /**
+     * Erase a message
+     *
+     * @param string $key
+     */
+    public static function erase($key)
+    {
+        $msg = self::_sess()->erase($key);
+    }
 } // end of class
 
 ?>

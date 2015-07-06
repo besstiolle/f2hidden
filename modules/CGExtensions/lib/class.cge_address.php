@@ -35,196 +35,391 @@
 #-------------------------------------------------------------------------
 #END_LICENSE
 
+/**
+ * This file contains a class for defining an address.
+ *
+ * @package CGExtensions
+ * @category Utilities
+ * @author  calguy1000 <calguy1000@cmsmadesimple.org>
+ * @copyright Copyright 2010 by Robert Campbell
+ */
+
+/**
+ * A simple class for defining and manipulating an address.
+ *
+ * @package CGExtensions
+ */
 class cge_address
 {
-  private $_company;
-  private $_firstname;
-  private $_lastname;
-  private $_address1;
-  private $_address2;
-  private $_city;
-  private $_state;
-  private $_postal;
-  private $_country;
-  private $_phone;
-  private $_fax;
-  private $_email;
+    /**
+     * @ignore
+     */
+    private $_company;
 
-  public function __construct()
-  {
-    // nothing here yet.
-  }
+    /**
+     * @ignore
+     */
+    private $_firstname;
 
-  public function set_company($str)
-  {
-    $this->_company = $str;
-  }
+    /**
+     * @ignore
+     */
+    private $_lastname;
 
-  public function get_company()
-  {
-    return $this->_company;
-  }
+    /**
+     * @ignore
+     */
+    private $_address1;
 
-  public function set_firstname($str)
-  {
-    $this->_firstname = $str;
-  }
+    /**
+     * @ignore
+     */
+    private $_address2;
 
-  public function get_firstname()
-  {
-    return $this->_firstname;
-  }
+    /**
+     * @ignore
+     */
+    private $_city;
 
-  public function set_lastname($str)
-  {
-    $this->_lastname = $str;
-  }
+    /**
+     * @ignore
+     */
+    private $_state;
 
-  public function get_lastname()
-  {
-    return $this->_lastname;
-  }
+    /**
+     * @ignore
+     */
+    private $_postal;
 
-  public function set_address1($str)
-  {
-    $this->_address1 = $str;
-  }
+    /**
+     * @ignore
+     */
+    private $_country;
 
-  public function get_address1()
-  {
-    return $this->_address1;
-  }
+    /**
+     * @ignore
+     */
+    private $_phone;
 
-  public function set_address2($str)
-  {
-    $this->_address2 = $str;
-  }
+    /**
+     * @ignore
+     */
+    private $_fax;
 
-  public function get_address2()
-  {
-    return $this->_address2;
-  }
+    /**
+     * @ignore
+     */
+    private $_email;
 
-  public function set_city($str)
-  {
-    $this->_city = $str;
-  }
+    /**
+     * Set the company name for this address.
+     *
+     * @param string $str
+     */
+    public function set_company($str)
+    {
+        $this->_company = $str;
+    }
 
-  public function get_city()
-  {
-    return $this->_city;
-  }
+    /**
+     * Return the company name (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_company()
+    {
+        return $this->_company;
+    }
 
-  public function set_state($str)
-  {
-    $this->_state = $str;
-  }
+    /**
+     * Set the first name for this address.
+     *
+     * @param string $str
+     */
+    public function set_firstname($str)
+    {
+        $this->_firstname = $str;
+    }
 
-  public function get_state()
-  {
-    return $this->_state;
-  }
+    /**
+     * Return the first name (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_firstname()
+    {
+        return $this->_firstname;
+    }
 
-  public function set_postal($str)
-  {
-    $this->_postal = $str;
-  }
+    /**
+     * Set the last name for this address.
+     *
+     * @param string $str
+     */
+    public function set_lastname($str)
+    {
+        $this->_lastname = $str;
+    }
 
-  public function get_postal()
-  {
-    return $this->_postal;
-  }
+    /**
+     * Return the last name (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_lastname()
+    {
+        return $this->_lastname;
+    }
 
-  public function set_country($str)
-  {
-    $this->_country = $str;
-  }
+    /**
+     * Set the first address line for this address.
+     *
+     * @param string $str
+     */
+    public function set_address1($str)
+    {
+        $this->_address1 = $str;
+    }
 
-  public function get_country()
-  {
-    return $this->_country;
-  }
+    /**
+     * Return the first address line (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_address1()
+    {
+        return $this->_address1;
+    }
 
-  public function set_phone($str)
-  {
-    $this->_phone = $str;
-  }
+    /**
+     * Set the second address line for this address.
+     *
+     * @param string $str
+     */
+    public function set_address2($str)
+    {
+        $this->_address2 = $str;
+    }
 
-  public function get_phone()
-  {
-    return $this->_phone;
-  }
+    /**
+     * Return the second address line (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_address2()
+    {
+        return $this->_address2;
+    }
 
-  public function set_fax($str)
-  {
-    $this->_fax = $str;
-  }
+    /**
+     * Set the city for this address.
+     *
+     * @param string $str
+     */
+    public function set_city($str)
+    {
+        $this->_city = $str;
+    }
 
-  public function get_fax()
-  {
-    return $this->_fax;
-  }
+    /**
+     * Return the city (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_city()
+    {
+        return $this->_city;
+    }
 
-  public function set_email($str)
-  {
-    $this->_email = $str;
-  }
+    /**
+     * Set the state for this address.
+     *
+     * @param string $str
+     */
+    public function set_state($str)
+    {
+        $this->_state = $str;
+    }
 
-  public function get_email()
-  {
-    return $this->_email;
-  }
+    /**
+     * Return the state (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_state()
+    {
+        return $this->_state;
+    }
 
-  public function is_valid()
-  {
-    if( $this->get_firstname() == '' ) return FALSE;
-    if( $this->get_lastname() == '' ) return FALSE;
-    if( $this->get_address1() == '' ) return FALSE;
-    if( $this->get_city() == '' ) return FALSE;
-    if( $this->get_state() == '' ) return FALSE;
-    if( $this->get_postal() == '' ) return FALSE;
-    if( $this->get_country() == '' ) return FALSE;
-    if( $this->get_email() == '' ) return FALSE;
-    return TRUE;
-  }
+    /**
+     * Set the postal/zip code for this address.
+     *
+     * @param string $str
+     */
+    public function set_postal($str)
+    {
+        $this->_postal = $str;
+    }
 
-  public function from_array($params,$prefix)
-  {
-    $flds = array('company','firstname','lastname','address1','address2', 'city','state', 'postal','country', 'phone','fax','email');
+    /**
+     * Return the postal/zip code (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_postal()
+    {
+        return $this->_postal;
+    }
 
-    foreach( $flds as $fld ) {
-        if( isset($params[$prefix.$fld]) ) {
-            $tmp = 'set_'.$fld;
-            $this->$tmp($params[$prefix.$fld]);
-        }
+    /**
+     * Set the country for this address.
+     * it is recommended to use the short country code (i.e: US or CA) for most addresses.
+     *
+     * @param string $str
+     */
+    public function set_country($str)
+    {
+        $this->_country = $str;
+    }
 
-        if( isset($params[$prefix.'first_name']) ) {
-            $this->set_firstname($params[$prefix.'first_name']);
-        }
+    /**
+     * Return the country (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_country()
+    {
+        return $this->_country;
+    }
 
-        if( isset($params[$prefix.'last_name']) ) {
-            $this->set_lastname($params[$prefix.'last_name']);
+    /**
+     * Set a phone number for this address.
+     *
+     * @param string $str
+     */
+    public function set_phone($str)
+    {
+        $this->_phone = $str;
+    }
+
+    /**
+     * Return the phone number (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_phone()
+    {
+        return $this->_phone;
+    }
+
+    /**
+     * Set a fax number for this address.
+     *
+     * @param string $str
+     */
+    public function set_fax($str)
+    {
+        $this->_fax = $str;
+    }
+
+    /**
+     * Return the fax number (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_fax()
+    {
+        return $this->_fax;
+    }
+
+    /**
+     * Set an email address for this address.
+     *
+     * @param string $str
+     */
+    public function set_email($str)
+    {
+        $this->_email = $str;
+    }
+
+    /**
+     * Return the email address (if any) associated with this address.
+     *
+     * @return string
+     */
+    public function get_email()
+    {
+        return $this->_email;
+    }
+
+    /**
+     * Test if the address is valid or not.
+     *
+     * @return bool
+     */
+    public function is_valid()
+    {
+        if( $this->get_firstname() == '' ) return FALSE;
+        if( $this->get_lastname() == '' ) return FALSE;
+        if( $this->get_address1() == '' ) return FALSE;
+        if( $this->get_city() == '' ) return FALSE;
+        if( $this->get_state() == '' ) return FALSE;
+        if( $this->get_postal() == '' ) return FALSE;
+        if( $this->get_country() == '' ) return FALSE;
+        if( $this->get_email() == '' ) return FALSE;
+        return TRUE;
+    }
+
+    /**
+     * Fill the contents of the current object with the data from an array.
+     * Expects an associative array with the following fields:  company,firstname,lastname,address1,address2,city,state,postal,country,phone,fax,email.
+     *
+     * @param array $params The input array
+     * @param string $prefix An optional prefix for the array keys.
+     */
+    public function from_array($params,$prefix = '')
+    {
+        $flds = array('company','firstname','lastname','address1','address2', 'city','state', 'postal','country', 'phone','fax','email');
+
+        foreach( $flds as $fld ) {
+            if( isset($params[$prefix.$fld]) ) {
+                $tmp = 'set_'.$fld;
+                $this->$tmp(strip_tags($params[$prefix.$fld]));
+            }
+
+            if( isset($params[$prefix.'first_name']) ) {
+                $this->set_firstname(strip_tags($params[$prefix.'first_name']));
+            }
+
+            if( isset($params[$prefix.'last_name']) ) {
+                $this->set_lastname(strip_tags($params[$prefix.'last_name']));
+            }
         }
     }
-  }
 
-  public function to_array($prefix = '')
-  {
-    $result = array();
-    $result[$prefix.'company'] = $this->get_company();
-    $result[$prefix.'first_name'] = $this->get_firstname();
-    $result[$prefix.'last_name'] = $this->get_lastname();
-    $result[$prefix.'address1'] = $this->get_address1();
-    $result[$prefix.'address2'] = $this->get_address2();
-    $result[$prefix.'city'] = $this->get_city();
-    $result[$prefix.'state'] = $this->get_state();
-    $result[$prefix.'postal'] = $this->get_postal();
-    $result[$prefix.'country'] = $this->get_country();
-    $result[$prefix.'phone'] = $this->get_phone();
-    $result[$prefix.'fax'] = $this->get_fax();
-    $result[$prefix.'email'] = $this->get_email();
-    return $result;
-  }
+    /**
+     * Create an associative array with the details oft he address.
+     *
+     * @param string $prefix An optional prefix for each of the array keys.
+     * @return array
+     */
+    public function to_array($prefix = '')
+    {
+        $result = array();
+        $result[$prefix.'company'] = $this->get_company();
+        $result[$prefix.'first_name'] = $this->get_firstname();
+        $result[$prefix.'last_name'] = $this->get_lastname();
+        $result[$prefix.'address1'] = $this->get_address1();
+        $result[$prefix.'address2'] = $this->get_address2();
+        $result[$prefix.'city'] = $this->get_city();
+        $result[$prefix.'state'] = $this->get_state();
+        $result[$prefix.'postal'] = $this->get_postal();
+        $result[$prefix.'country'] = $this->get_country();
+        $result[$prefix.'phone'] = $this->get_phone();
+        $result[$prefix.'fax'] = $this->get_fax();
+        $result[$prefix.'email'] = $this->get_email();
+        return $result;
+    }
 } // class
 
 

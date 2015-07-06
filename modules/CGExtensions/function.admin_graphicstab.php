@@ -104,23 +104,20 @@ $smarty->assign('input_submit',
 		$this->CreateInputSubmit($id,'graphical_submit',$this->Lang('submit')));
 
 $aligns = array();
-$aligns[$this->Lang('align_ul')] = cg_watermark::ALIGN_UL;
-$aligns[$this->Lang('align_uc')] = cg_watermark::ALIGN_UC;
-$aligns[$this->Lang('align_ur')] = cg_watermark::ALIGN_UR;
-$aligns[$this->Lang('align_ml')] = cg_watermark::ALIGN_ML;
-$aligns[$this->Lang('align_mc')] = cg_watermark::ALIGN_MC;
-$aligns[$this->Lang('align_mr')] = cg_watermark::ALIGN_MR;
-$aligns[$this->Lang('align_ll')] = cg_watermark::ALIGN_LL;
-$aligns[$this->Lang('align_lc')] = cg_watermark::ALIGN_LC;
-$aligns[$this->Lang('align_lr')] = cg_watermark::ALIGN_LR;
+$aligns[$this->Lang('align_ul')] = \CGExtensions\watermarker::ALIGN_UL;
+$aligns[$this->Lang('align_uc')] = \CGExtensions\watermarker::ALIGN_UC;
+$aligns[$this->Lang('align_ur')] = \CGExtensions\watermarker::ALIGN_UR;
+$aligns[$this->Lang('align_ml')] = \CGExtensions\watermarker::ALIGN_ML;
+$aligns[$this->Lang('align_mc')] = \CGExtensions\watermarker::ALIGN_MC;
+$aligns[$this->Lang('align_mr')] = \CGExtensions\watermarker::ALIGN_MR;
+$aligns[$this->Lang('align_ll')] = \CGExtensions\watermarker::ALIGN_LL;
+$aligns[$this->Lang('align_lc')] = \CGExtensions\watermarker::ALIGN_LC;
+$aligns[$this->Lang('align_lr')] = \CGExtensions\watermarker::ALIGN_LR;
 $smarty->assign('input_alignment',
 		$this->CreateInputDropdown($id,'watermark_alignment',$aligns,
-		   $this->GetPreference('watermark_alignment',
-					cg_watermark::ALIGN_LL)));
-$smarty->assign('input_thumbnailsize',
-		$this->CreateInputText($id,'thumbnailsize',$this->GetPreference('thumbnailsize'),3,3));
-$smarty->assign('prompt_imageextensions',
-		$this->Lang('image_extensions'));
+		   $this->GetPreference('watermark_alignment',CGExtensions\watermarker::ALIGN_LL)));
+$smarty->assign('input_thumbnailsize',$this->CreateInputText($id,'thumbnailsize',$this->GetPreference('thumbnailsize'),3,3));
+$smarty->assign('prompt_imageextensions',$this->Lang('image_extensions'));
 $smarty->assign('input_imageextensions',
 		$this->CreateInputText($id,'imageextensions',$this->GetPreference('imageextensions',''),25,255));
 $smarty->assign('input_allow_watermarking',
@@ -132,8 +129,7 @@ $smarty->assign('input_allow_resizing',
 $smarty->assign('input_resizeimage',
 		$this->CreateInputText($id,'resizeimage', $this->GetPreference('resizeimage'),3,4));
 $smarty->assign('input_delete_orig_image',
-		$this->CreateInputYesNoDropdown($id,'delete_orig_image',
-						$this->GetPreference('delete_orig_image',0)));
+		$this->CreateInputYesNoDropdown($id,'delete_orig_image',$this->GetPreference('delete_orig_image',0)));
 echo $this->ProcessTemplate('admin_graphicstab.tpl');
 #
 # EOF

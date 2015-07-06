@@ -67,7 +67,7 @@ final class cge_utils
             throw new cg_sql_error($error_message.' -- '.$db->ErrorMsg(),$error_number);
         };
 
-        $db = cmsms()->GetDb();
+        $db = CmsApp::get_instance()->GetDb();
         $db->raiseErrorFn = $_error_handler;
         return $db;
     }
@@ -187,8 +187,8 @@ final class cge_utils
      */
     public static function get_mime_type($filename)
     {
-        if( !function_exists('finfo_open') ) throw new Exception('Problem with host setup.  the finfo_open function does not exist');
-        if( file_exists($filename) ) {
+        if( !function_exists('finfo_open') ) throw new \RuntimeException('Problem with host setup.  the finfo_open function does not exist');
+        if( is_file($filename) && is_readable($filename) ) {
             $fh = finfo_open(FILEINFO_MIME_TYPE);
             if( $fh ) {
                 $mime_type = finfo_file($fh,$filename);
@@ -219,7 +219,7 @@ final class cge_utils
         header('Content-Type: '.$content_type);
         header("Content-Disposition: attachment; filename=\"$filename\"" );
         header('Content-Transfer-Encoding: binary');
-        header('Content-Length: ' . count($data));
+        //header('Content-Length: ' . count($data));
 
         // send the data
         print($data);
@@ -444,7 +444,7 @@ final class cge_utils
         if( !is_array($args) || count($args) == 0 ) return;
 
         for( $i = 0; $i < count($args); $i++ ) {
-            if( $args[$i] ) return $args[$i];
+            if( !is_null($args[$i]) ) return $args[$i];
         }
     }
 
@@ -494,7 +494,7 @@ final class cge_utils
     {
         $src = urldecode($src);
         $srcfile = null;
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
 
         if( file_exists($src) ) $srcfile = $src; // user specified the complete path to the file.
         if( !$srcfile && startswith($src,$config['uploads_url']) ) {
@@ -543,7 +543,7 @@ final class cge_utils
      */
     public static function file_to_url($file,$force_ssl = FALSE)
     {
-        $config = cmsms()->GetConfig();
+        $config = CmsApp::get_instance()->GetConfig();
 
         $url = null;
         if( !file_exists($file) ) return $url;
@@ -633,12 +633,54 @@ final class cge_utils
     {
         $LocaleInfo = localeconv();
         if( $thousands_sep == null ) $thousands_sep = $LocaleInfo['mon_thousands_sep'];
+        if( !$thousands_sep ) $thousands_sep = $LocaleInfo['thousands_sep'];
+        if( !$thousands_sep ) $thousands_sep = ',';
         if( $decimal_pt == null ) $decimal_pt = $LocaleInfo['mon_thousands_sep'];
+        if( !$decimal_pt ) $decimal_pt = $LocaleInfo['decimal_point'];
+        if( !$decimal_pt ) $decimal_pt = '.';
         $floatString = str_replace($thousands_sep , "", $floatString);
         $floatString = str_replace($decimal_pt , ".", $floatString);
-        return floatval($floatString);
+        return (float) floatval($floatString);
     }
 
+    static public function encrypt_params($params)
+    {
+        $key = CMS_VERSION.__FILE__;
+        $out = array();
+        $out['_d'] = base64_encode(cge_encrypt::encrypt($key,serialize($params)));
+        return $out;
+    }
+
+    static public function decrypt_params($params)
+    {
+        $key = CMS_VERSION.__FILE__;
+        if( !isset($params['_d']) ) return;
+
+        $tmp = cge_encrypt::decrypt($key,base64_decode($params['_d']));
+        $tmp = unserialize($tmp);
+        unset($params['_d']);
+        $tmp = array_merge($params,$tmp);
+        return $tmp;
+    }
+
+    /**
+     * A convenience function to assist in doing certain tasks only once per day.
+     * This method will convert the key into a preference, and then check the value of that preference
+     * if it is more than 24 hours since the last time this method was called for this preference
+     * then the value of the preference is updated to the current time and FALSE is returned.
+     * Otherwise TRUE is returned.
+     *
+     * @param string $key
+     * @return bool
+     */
+    static public function done_today($key)
+    {
+        $key = md5(__METHOD__.$key);
+        $val = \cms_siteprefs::get($key);
+        if( time() - $val < 24 * 3600 ) return TRUE;
+        \cms_siteprefs::set($key,time());
+        return FALSE;
+    }
 } // class
 
 #
