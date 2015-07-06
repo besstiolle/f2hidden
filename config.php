@@ -13,6 +13,9 @@ $config['url_rewriting'] = 'mod_rewrite';
 $config['page_extension'] = '';
 $config['root_url'] = 'http://f2hidden.localhost';
 
+//Forge configuration
+$config['trusted_domain'] = array('http://f2.localhost');
+
 $config['developer_mode'] = 'TRUE';
 #$config['debug_to_log'] = 'true';
 #$config['show_performance_info'] = 'true'; #inutile pour du retour Json de Forge2
