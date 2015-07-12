@@ -14,7 +14,7 @@ class file_releaseService extends abstractService implements interfaceService {
 
 	public function __construct($path, $params){
 		//Create exclusivly
-		ApiRequest::allowMethods(ApiRequest::$PUT);
+		ApiRequest::allowMethods(ApiRequest::$PUT, ApiRequest::$GET);
 
 		$this->initResponse($path, $params);
 
@@ -23,12 +23,48 @@ class file_releaseService extends abstractService implements interfaceService {
 
 	function get(){
 
-		//
+		//Select by example
+		$example = new OrmExample();
+		$example->addCriteria('id', OrmTypeCriteria::$EQ, array($this->params['sid']));
+
+		//We don't need the sid anymore
+		unset($this->params['sid']);
+
+		$entities = OrmCore::findByExample($this->currentEntity, 
+											$example, 
+											null, 
+											new OrmLimit(0, 10));
+
+		if(empty($entities)){
+			$this->response->setCode(404); 
+		}
+
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
+
+		$this->response->addContent($this->jsonBlock, $entityVals);
+		return $this->response;
 	}
 
 	function getAll(){
 
-		//
+		//Select by example
+		$example = new OrmExample();
+		if(!empty($this->params['id_related']) ) {
+			$example->addCriteria('id_related', OrmTypeCriteria::$EQ, array($this->params['id_related']));
+		}
+		$example->addCriteria('type',OrmTypeCriteria::$EQ, array($this->type));
+		
+		$entities = OrmCore::findByExample($this->currentEntity, $example);
+
+		//counter
+		$count = OrmCore::selectCountByExample($this->currentEntity, 
+											$example);
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
+
+		$this->response->addContent($this->jsonBlock, $entityVals);
+		$this->response->addContent('count', $count);
+
+		return $this->response;
 	}
 
 	function delete(){

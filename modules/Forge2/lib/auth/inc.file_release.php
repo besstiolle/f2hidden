@@ -10,7 +10,8 @@ $fields = [
 //	'name' => '',
 //	'url' => '',
 //	'type' => '#^[0-9]$#',
-//	'id_related' => '#^[0-9]+$#',
+	'id_related' => '#^[0-9]+$#',
 //	'created_at' => '',
-	'files' => '' //array
+	'files' => '', //array
+	'onTransfert' => '#^[0-1]$#',
 ];

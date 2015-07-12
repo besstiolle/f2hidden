@@ -14,7 +14,7 @@ class file_avatarService extends abstractService implements interfaceService {
 
 	public function __construct($path, $params){
 		//Create exclusivly
-		ApiRequest::allowMethods(ApiRequest::$PUT);
+		ApiRequest::allowMethods(ApiRequest::$PUT, ApiRequest::$GET);
 
 		$this->initResponse($path, $params);
 
@@ -23,12 +23,69 @@ class file_avatarService extends abstractService implements interfaceService {
 
 	function get(){
 
-		//
+		//Select by example
+		$example = new OrmExample();
+		$example->addCriteria('id', OrmTypeCriteria::$EQ, array($this->params['sid']));
+
+		//We don't need the sid anymore
+		unset($this->params['sid']);
+
+		$entities = OrmCore::findByExample($this->currentEntity, 
+											$example, 
+											null, 
+											new OrmLimit(0, 10));
+
+		if(empty($entities)){
+			$this->response->setCode(404); 
+		}
+
+		$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
+
+		$this->response->addContent($this->jsonBlock, $entityVals);
+		return $this->response;
 	}
 
 	function getAll(){
 
-		//
+		if($this->params['onTransfert'] == 0) {
+
+			//Find images in directories
+			$config = cmsms()->GetConfig();
+			$dir = $config['root_path'].'/uploads/projects/'.$this->params['sid'].'/avatar/';
+			$url = $config['root_url'].'/uploads/projects/'.$this->params['sid'].'/avatar/';
+			$pattern = '/\.(gif|jpe?g|png)$/i';
+			$files = file_avatarService::getFilesInDir($dir, $pattern);
+			$count = ''.count($files);
+
+			$entityVals = array();
+			foreach ($files as $file) {
+				$entityVals[] = array(
+					'name' => $file,
+					'url' => $url.$file,
+					);
+			}
+			
+		} else {
+
+			//Select by example
+			$example = new OrmExample();
+			if(!empty($this->params['sid']) ) {
+				$example->addCriteria('id_related', OrmTypeCriteria::$EQ, array($this->params['sid']));
+			}
+			$example->addCriteria('type',OrmTypeCriteria::$EQ, array($this->type));
+			
+			$entities = OrmCore::findByExample($this->currentEntity, $example);
+
+			//counter
+			$count = OrmCore::selectCountByExample($this->currentEntity, 
+												$example);
+			$entityVals = OrmUtils::entitiesToAbsoluteArray($entities);
+		}
+
+		$this->response->addContent($this->jsonBlock, $entityVals);
+		$this->response->addContent('count', $count);
+
+		return $this->response;
 	}
 
 	function delete(){
@@ -76,6 +133,29 @@ class file_avatarService extends abstractService implements interfaceService {
 
 		//
 	}
+
+
+    /**
+     * Will return the list of file in the directory wich match the pattern.
+     *
+     * @param directory the directory
+     * @param pattern the pattern
+     **/
+    public static function getFilesInDir($directory, $pattern){
+        $files = array();
+        if(!is_dir($directory)){
+            return null;
+        }
+        if ($handle = opendir($directory)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry != "." && $entry != ".." && !is_dir($directory.'/'.$entry) && preg_match( $pattern , $entry)) {
+                   $files[] = $entry;
+                }
+            }
+            closedir($handle);
+        }
+        return $files;
+    }
 
 }
 
