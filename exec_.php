@@ -38,7 +38,7 @@ while ( $row = $result->fetch_array(MYSQLI_ASSOC) ) {
 	foreach ($trusted as $trusted_domain) {
 		$pos = strpos($row['url'], $trusted_domain);
 		if($pos === FALSE || $pos !== 0 ) {
-			error_log('[exec_] : the file '.$url.' was on an untrusted domain');
+			logger('the file '.$url.' was on an untrusted domain');
 			continue;
 		}
 	}
@@ -47,7 +47,7 @@ while ( $row = $result->fetch_array(MYSQLI_ASSOC) ) {
 	$url = $row['url'];
 	$file = @file_get_contents($url);
 	if(!$file){
-		error_log('[exec_] : the file '.$url.' was not found');
+		logger('the file '.$url.' was not found');
 		continue;
 	}
 
@@ -63,7 +63,7 @@ while ( $row = $result->fetch_array(MYSQLI_ASSOC) ) {
 		$suffix = 'release';
 		$mime_authorised = array('text/xml','application/zip');
 	} else {
-		error_log('[exec_] : the type parameter '.$md5.' is unknown');
+		logger('the type parameter '.$md5.' is unknown');
 		continue;
 	}
 
@@ -73,7 +73,7 @@ while ( $row = $result->fetch_array(MYSQLI_ASSOC) ) {
 	file_put_contents($tmp_dir.'/'.$row['name'], $file);
 	$md5 = md5_file($tmp_dir.'/'.$row['name']);
 	if($md5 != $row['md5']){
-		error_log('[exec_] : the md5 calculated '.$md5.' is not equals to the md5 expected : '.$row['md5']);
+		logger('the md5 calculated '.$md5.' is not equals to the md5 expected : '.$row['md5']);
 		unlink($tmp_dir.'/'.$row['name']);		
 		continue;
 	}
@@ -83,7 +83,7 @@ while ( $row = $result->fetch_array(MYSQLI_ASSOC) ) {
 	$mime = finfo_file($finfo, $tmp_dir.'/'.$row['name']);
 	if(!in_array($mime, $mime_authorised)){
 		unlink($tmp_dir.'/'.$row['name']);
-		error_log('[exec_] : the mime type '.$mime.' is not accepted');
+		logger('the mime type '.$mime.' is not accepted');
 		continue;
 	}
 
@@ -98,8 +98,14 @@ while ( $row = $result->fetch_array(MYSQLI_ASSOC) ) {
 }
 
 $sql = 'DELETE FROM '.$prefix.'module_forge2_forgefiles where id in ('.implode(',', $toDelete).')';
-//$result = $mysqli->query($sql);
+$result = $mysqli->query($sql);
 
 $mysqli->close();
+
+function logger($msg){
+	$msg = '[exec_] '.$msg;
+	error_log($msg);
+//	echo $msg.'<br/>';
+}
 
 ?>
