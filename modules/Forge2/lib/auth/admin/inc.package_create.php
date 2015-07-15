@@ -7,7 +7,6 @@ $fieldsRequired = [
 	//'sid',
 	'project_id',
 	'name',
-	'',
 				];
 
 
