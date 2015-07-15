@@ -14,7 +14,7 @@ class file_showService extends abstractService implements interfaceService {
 
 	public function __construct($path, $params){
 		//Create exclusivly
-		ApiRequest::allowMethods(ApiRequest::$PUT, ApiRequest::$GET);
+		ApiRequest::allowMethods(ApiRequest::$PUT, ApiRequest::$GET, ApiRequest::$DELETE);
 
 		$this->initResponse($path, $params);
 
@@ -47,7 +47,7 @@ class file_showService extends abstractService implements interfaceService {
 
 	function getAll(){
 
-		if($this->params['onTransfert'] == 0) {
+		if(!isset($this->params['onTransfert']) || $this->params['onTransfert'] == 0) {
 
 			//Find images in directories
 			$config = cmsms()->GetConfig();
@@ -90,7 +90,17 @@ class file_showService extends abstractService implements interfaceService {
 
 	function delete(){
 
-		//
+		//Find images in directories
+		$config = cmsms()->GetConfig();
+		$file = $config['root_path'].'/uploads/projects/'.$this->params['sid'].'/show/'.$this->params['filename'];
+		if(!file_exists($file) ){
+			$this->response->setCode(404);
+			$this->response->setMessage("Not Found");
+		}
+
+		unlink($file);
+
+		return $this->response;
 	}
 
 	function create(){

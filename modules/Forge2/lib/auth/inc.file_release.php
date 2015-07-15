@@ -14,4 +14,5 @@ $fields = [
 //	'created_at' => '',
 	'files' => '', //array
 	'onTransfert' => '#^[0-1]$#',
+	'filename' => '#^[\d\w\-\.]*$#',
 ];
