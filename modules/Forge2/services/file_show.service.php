@@ -58,13 +58,14 @@ class file_showService extends abstractService implements interfaceService {
 			$count = ''.count($files);
 
 			$entityVals = array();
-			foreach ($files as $file) {
-				$entityVals[] = array(
-					'name' => $file,
-					'url' => $url.$file,
-					);
+			if($count > 0){
+				foreach ($files as $file) {
+					$entityVals[] = array(
+						'name' => $file,
+						'url' => $url.$file,
+						);
+				}
 			}
-			
 		} else {
 
 			//Select by example
