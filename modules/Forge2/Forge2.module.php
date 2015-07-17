@@ -113,7 +113,8 @@ class Forge2 extends Orm
 		$restRoutes = ['project', 'assignment', 'tracker_item', 'comment',
 					'history',
 					'package',
-					'release'];
+					'release',
+					'license'];
 		foreach ($restRoutes as $restRoute) {
 			
 			//get/delete/update a $restRoute

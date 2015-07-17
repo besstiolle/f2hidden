@@ -61,6 +61,11 @@ switch ($params['action']){
 		$service = new file_releaseService($this->getPath(), $params);
 		break;
 
+	case 'license';
+		include('services/license.service.php');
+		$service = new licenseService($this->getPath(), $params);
+		break;
+
 	default:
 		echo "You may forgot to implement action ".$params['action']." into genericRestAction.";
 		break;
