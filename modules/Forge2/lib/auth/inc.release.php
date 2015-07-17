@@ -6,6 +6,7 @@ if (!function_exists("cmsms")) exit;
 //DEFINE('SID', '...');
 $fields = [
 	'sid' => '#^[0-9]+$#',
+	'name' => '',
 	'package_id' => '#^[0-9]+$#',
 	'release_notes' => '',
 	'changelog' => '',

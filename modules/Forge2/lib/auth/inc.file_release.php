@@ -7,7 +7,7 @@ if (!function_exists("cmsms")) exit;
 $fields = [
 
 	'sid' => '#^[0-9]+$#',
-//	'name' => '',
+	'name' => '',
 //	'url' => '',
 //	'type' => '#^[0-9]$#',
 	'id_related' => '#^[0-9]+$#',

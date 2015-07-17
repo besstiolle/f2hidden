@@ -65,6 +65,10 @@ class FieldController{
 				continue;
 			}
 
+			if(!isset($fields[$fieldName])){
+				error_log("The Field required '".$fieldName."' is present in File ".$definitions." but not defined in file ".$patterns);
+			}
+
 			//Control the pattern;
 			$result = $this->controlPattern($this->params[$fieldName], $fields[$fieldName]);
 			if(!$result) {
@@ -76,6 +80,10 @@ class FieldController{
 		//Test #2 : the fields optionnal, if there are present, must respect the pattern.
 		foreach ($fieldsOptional as $fieldName) {
 			if(!empty($this->params[$fieldName])){
+
+				if(!isset($fields[$fieldName])){
+					error_log("The Field optionnal '".$fieldName."' is present in File ".$definitions." but not defined in file ".$patterns);
+				}
 				
 				//Control the pattern;
 				$result = $this->controlPattern($this->params[$fieldName], $fields[$fieldName]);

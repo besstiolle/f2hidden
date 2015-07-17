@@ -13,7 +13,7 @@ $fieldsRequired = [
 
 $fieldsOptional = [
 
-	'release_note',
+	'release_notes',
 	'changelog',
 	'is_active',
 //	'created_at',

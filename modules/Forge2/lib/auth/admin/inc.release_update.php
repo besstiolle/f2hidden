@@ -4,14 +4,14 @@ if (!function_exists("cmsms")) exit;
 
 $fieldsRequired = [
 	'sid',
+	'package_id',
+	'name',
 				];
 
 
 $fieldsOptional = [
 
-//	'package_id',
-	'name',
-	'release_note',
+	'release_notes',
 	'changelog',
 	'released_by',
 	'is_active',
