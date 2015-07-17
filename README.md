@@ -3,6 +3,7 @@
 ### Version 0.0.2 : July 2015
 
 * Forge : add mechanism for uploading pictures Show & Avatar
+* Forge : add Services for Licenses
 
 
 ### Version 0.0.1 : June 2015
