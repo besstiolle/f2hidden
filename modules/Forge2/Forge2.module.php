@@ -87,16 +87,6 @@ class Forge2 extends Orm
 	function InitializeFrontend()
 	{
 		$this->RegisterModulePlugin(true, false);
-	/*	$this->RestrictUnknownParams();
-		$this->SetParameterType('projectName',CLEAN_STRING);
-		$this->SetParameterType('packageId',CLEAN_INT);*/
-	/*	$this->SetParameterType('max_height',CLEAN_INT);
-		$this->SetParameterType('min_width',CLEAN_INT);
-		$this->SetParameterType('min_height',CLEAN_INT);
-		$this->SetParameterType('clean_name',CLEAN_STRING);
-		$this->SetParameterType('dir_path',CLEAN_STRING);
-		$this->SetParameterType('dir_url',CLEAN_STRING);
-		$this->SetParameterType('template',CLEAN_STRING);*/
 	}
 
 	function CreateStaticRoutes() {
@@ -130,7 +120,7 @@ class Forge2 extends Orm
 		$restRoutes = [
 					'file_avatar' => 'files\/project\/'.$sid.'\/avatar',
 					'file_show' => 'files\/project\/'.$sid.'\/show',
-					'file_release' => 'files\/project\/'.$sid.'\/release'];
+					'file_release' => 'files\/release\/'.$sid.'\/file'];
 		foreach ($restRoutes as $action => $restRoute) {
 			$route = $this->_generateRoute($prefix, $version, $restRoute);
 			$this->_add_static($route, array('action'=>$action, '_all'=>TRUE));
